@@ -1,0 +1,49 @@
+<StackLayout>
+  <Label text="header works" textWrap="true"></Label>
+  <Label text="This is a migrated component" textWrap="true"></Label>
+  <Label text="Update it to provide the UI elements required in your mobile app" textWrap="true"></Label>
+</StackLayout>
+
+<!--
+Original Web template:
+
+<div class="page_content">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a routerLink="/" class="navbar-brand">
+            <img src="assets/images/recon_logo.png" alt="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" [routerLinkActive]="'active'"
+                    *ngFor="let menu of mainMenu; let i = index">
+                    <a class="nav-link" mdbWavesEffect routerLink="{{menu.slug}}">{{menu.name}}</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto nav-flex-icons nav_right_panel"  *ngIf="isLogin">
+                <li class="nav-item avatar dropdown" dropdown>
+                    <a dropdownToggle mdbWavesEffect type="button" class="nav-link waves-light" mdbWavesEffect>
+                        <img src="assets/images/user.svg">
+                    </a>
+                    <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown dropdown-primary" role="menu">
+                        <div class="profile_icon">
+                            <div class="icon">
+                                <img src="assets/images/user_icon.png">
+                            </div>
+                            <p>Welcome Abhishek</p>
+                        </div>
+                        <a class="dropdown-item waves-light" mdbWavesEffect  (click)="logout()">
+                            <i class="fa fa-sign-out"></i>
+                            Log out
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+-->

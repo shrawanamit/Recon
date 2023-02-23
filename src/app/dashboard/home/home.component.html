@@ -1,0 +1,814 @@
+<!-- card-panel styles -->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            <span>Loading! Please wait ...</span>
+            <!-- <p class="text-danger">{{errorMsg}}</p> -->
+        </button>
+    </div>
+    <div class="container">
+        <!-- <div class="form-group col-3">
+            <label>Brand Select</label>
+            <select name="SettlementSatus" [(ngModel)]="SettlementSatus"
+                (ngModelChange)="changeSettData(SettlementSatus)" required #settlementSatus="ngModel">
+                <option [ngValue]="1">Single Brand</option>
+                <option [ngValue]="2">Multipal Brand</option>
+            </select>
+            <div
+                *ngIf="searchFilter.submitted || settlementSatus.invalid && (settlementSatus.dirty || settlementSatus.touched)">
+                <div class="alert alert-danger" *ngIf="settlementSatus.errors?.required">
+                    <i class="fa fa-info-circle"></i>
+                    Please Select Settelment Data.
+                </div>
+            </div>
+        </div> -->
+
+        <div class="page_content_dash">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" name="form"
+                    (ngSubmit)="searchFilter.form.valid && getSearchData(searchFilter)">
+                    <div class="row">
+                        <div class="col-10 px-0">
+                            <div class="row">
+
+                                <div class="form-group col">
+                                    <label>Brand Select</label>
+                                    <select name="SettlementSatus" [(ngModel)]="SettlementSatus"
+                                        (ngModelChange)="changeSettData(SettlementSatus)" required
+                                        #settlementSatus="ngModel">
+                                        <option [ngValue]="1">Single Brand</option>
+                                        <!-- <option [ngValue]="2">Multipal Brand</option> -->
+                                    </select>
+                                    <div
+                                        *ngIf="searchFilter.submitted || settlementSatus.invalid && (settlementSatus.dirty || settlementSatus.touched)">
+                                        <div class="alert alert-danger" *ngIf="settlementSatus.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Settelment Data.
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col multidrop_container" *ngIf="isSingleBrand">
+                                    <label>Select Program single</label>
+                                    <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                        {{selectedProgram}}
+                                        <input type="hidden" name="programData" [(ngModel)]="selectedProgram"
+                                            [value]="selectedProgram" required #selectedProg="ngModel">
+                                    </div>
+                                    <div
+                                        *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                        <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Program.
+                                        </div>
+                                    </div>
+                                    <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                        <ul>
+                                            <li *ngFor="let program of programData">
+                                                <div class="checkbox_wrap">
+                                                    <div class="form-group">
+                                                        <input type="radio" id="{{program.brandId}}" name="brandName"
+                                                            (change)="getselectedProgramSingle(program)"
+                                                            [checked]="program.isSelect">
+                                                        <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="text-center see_all" (click)="seeAllPrograms()"
+                                            *ngIf="!isSingleBrand">
+                                            <p>See All Program</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- select country -->
+
+
+                                <div class="form-group col multidrop_container" *ngIf="isSingleBrand">
+                                    <label>Country</label>
+                                    <div class="selected_text" (click)="isCountryClicked=!isCountryClicked">
+                                        {{selectedCountry}}
+                                        <input type="hidden" name="programData" [(ngModel)]="selectedCountry"
+                                            [value]="selectedCountry" required #selectedProg="ngModel">
+                                    </div>
+                                    <div
+                                        *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                        <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Country.
+                                        </div>
+                                    </div>
+                                    <div class="dropdown_multiselect" *ngIf="isCountryClicked">
+                                        <ul>
+                                            <li *ngFor="let program of reconCountryWithModes">
+                                                <div class="checkbox_wrap">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="{{program.countryID}}"
+                                                            name="brandName" (change)="getselectedCountry(program)"
+                                                            [checked]="program.isSelectCountry">
+                                                        <label
+                                                            for="{{program.countryID}}">{{program.countryName}}</label>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                     
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="form-group col multidrop_container" *ngIf="isMultiBrand">
+                                    <label>Select Program multipal</label>
+                                    <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                        {{selectedProgram}}
+                                        <input type="hidden" name="programData" [(ngModel)]="selectedProgram"
+                                            [value]="selectedProgram" required #selectedProg="ngModel">
+                                    </div>
+                                    <div
+                                        *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                        <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Program.
+                                        </div>
+                                    </div>
+                                    <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                        <ul>
+                                            <li *ngFor="let program of programData">
+                                                <div class="checkbox_wrap">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="{{program.brandId}}"
+                                                            (change)="getselectedProgram(program)"
+                                                            [checked]="program.isSelect">
+                                                        <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="text-center see_all" (click)="seeAllPrograms()">
+                                            <p>See All Program</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <!-- country mode  -->
+
+
+
+                                <!-- <div class="form-group col">
+                                    <label>Bill Type</label>
+                                    
+                                    <select name="billtype" [(ngModel)]="selectedCountryModeType"
+                                        #selectedBill="ngModel"  (change)="handleCountryModeType(bill)" >
+                                        <option *ngFor="let bill of selectedCountryMode;"
+                                            [ngValue]="bill.modeName"
+                                             selected>
+                                            {{bill.modeName}}</option>
+                                    </select>
+                                   
+                                    <div
+                                        *ngIf="searchFilter.submitted || selectedBill.invalid && (selectedBill.dirty || selectedBill.touched)">
+                                        <div class="alert alert-danger" *ngIf="selectedBill.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Bill Type.
+                                        </div>
+                                    </div>
+                                </div> -->
+
+
+                                <div class="form-group col multidrop_container" *ngIf="isSingleBrand">
+                                    <label>Mode Type</label>
+                                    <div class="selected_text" (click)="isBillTypeClick=!isBillTypeClick">
+                                        {{selectedCountryModeType}}
+                                        <input type="hidden" name="programData" [(ngModel)]="selectedCountryModeType"
+                                            [value]="selectedCountryModeType" required #selectedProg="ngModel">
+                                    </div>
+                                    <div
+                                        *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                        <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                            <i class="fa fa-info-circle"></i>
+                                            Please Select Bill Type.
+                                        </div>
+                                    </div>
+                                    <div class="dropdown_multiselect_mode" *ngIf="isBillTypeClick">
+                                        <ul>
+                                            <li *ngFor="let program of selectedCountryMode">
+
+                                                <!-- <div *ngFor="let program of selectedCountryMode"> -->
+                                                <div  class="multiselect_mode_type" *ngFor="let countrymode of program.reconModes">
+                                                    <div class="checkbox_wrap">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="{{countrymode.refrenceID}}"
+                                                                name="brandName"
+                                                                (change)="handleCountryModeType(countrymode,program)"
+                                                                [checked]="countrymode.isSelectMode">
+                                                                <label for="{{countrymode.refrenceID}}">{{countrymode.modeName}}({{program.countryCode}})</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- </div> -->
+                                            </li>
+                                        </ul>
+
+
+                                        <!-- <div class="text-center see_all" (click)="seeAllPrograms()" *ngIf="!isSingleBrand">
+                                            <p>See All Program</p>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="form-group col date" *ngIf="isSingleBrand">
+                                    <label>Date</label>
+                                    <!-- <input type="text" id="daterange" value="{{editDate}}" /> -->
+                                    <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                                        #dateRangePicker></ngx-mat-drp>
+                                    <img src="/assets/images/calendar.svg">
+                                    <!-- <input id="searhDate" type="date" (change)="Filters($event)" [value]="newDate" /> -->
+                                </div>
+                                <div class="form-group col date" *ngIf="isMultiBrand">
+                                    <label>Date</label>
+                                    <!-- <input type="text" id="daterange" value="{{editDate}}" /> -->
+                                    <!-- <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                                        #dateRangePicker></ngx-mat-drp>
+                                    <img src="/assets/images/calendar.svg"> -->
+                                    <input id="searhDate" type="date" (change)="Filters($event)" [value]="newDate" />
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="slide_toggle_extra" *ngIf="isClickedAdvance && arrselectedProgram.length <= 1">
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label>Store Name</label>
+                                        <input type="text" name="store" [(ngModel)]="storewise">
+                                    </div>
+                                    <div class="form-group col">
+                                        <label>Mobile Number</label>
+                                        <input type="number" name="phone" [(ngModel)]="mobile" minlength="10"
+                                            maxlength="10" (keyup)="mobileValidation(mobile)" #phone="ngModel">
+                                        <div>
+                                            <div class="alert alert-danger" *ngIf="!mobileValidate">
+                                                <i class="fa fa-info-circle"></i>
+                                                Phone must be at least 10 characters long.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col">
+                                        <label>Bill ID.</label>
+                                        <input type="text" name="bill" [(ngModel)]="bill_id">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 search_btn_wrap">
+                            <div class="form-group col action_btn">
+                                <button type="submit">
+                                    <span *ngIf="searchInProgress" class="text-light spinner-border spinner-border-sm"
+                                        role="status" aria-hidden="true"></span>
+                                    Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-danger">{{responceMsg}}</p>
+                <div class="toggle_hide_show" *ngIf="arrselectedProgram.length <= 1">
+                    <span *ngIf="isClickedAdvance" (click)="isClickedAdvance=!isClickedAdvance">-Hide Additional
+                        Features</span>
+                    <span *ngIf="!isClickedAdvance" (click)="isClickedAdvance=!isClickedAdvance">+Show Additional
+                        Features</span>
+                </div>
+            </div>
+            <!-- after search -->
+            <div class="row edit_field" *ngIf="isClickedSearch">
+                <div class="col">
+                    <label>Select Programs</label>
+                    <p>{{selectedProgram}}</p>
+                    <span class="more" *ngIf="arrselectedProgram.length > 2">
+                        <small class="icon-info-tooltip" [attr.data-tip]="selectedProgram" tabindex="2">
+                            view more
+                        </small>
+                    </span>
+                </div>
+                <div class="col">
+                    <label>Bill Type</label>
+                    <p>{{selectedBillType}}</p>
+                </div>
+                <div class="col">
+                    <label>Date</label>
+                    <p *ngIf="isSingleBrand">{{startDate | date}} - {{endDate | date}}</p>
+                    <p *ngIf="!isSingleBrand">{{newDate | date}}</p>
+                </div>
+                <div class="col text-right">
+                    <div class="edit_field_btn" (click)="editProgram();">
+                        <small class="icon-info-tooltip" data-tip="Edit Search Field" tabindex="2">
+                            <img class="icon-tooltip-img" src="/assets/images/pencil.svg">
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page_content_edit" *ngIf="isClickedSearch">
+            <div class="row search_result">
+                <div class="col-3">
+                    <div class="search_count total" [ngClass]="{active: clickTotalCountMenu == 'total'}"
+                        (click)="clickActive('total');">
+                        <div class="label">Total</div>
+                        <div class="count">{{totalCount | number}}</div>
+                    </div>
+                    <div class="search_count maped" [ngClass]="{active: clickTotalCountMenu == 'maped'}"
+                        (click)="clickActive('maped');">
+                        <div class="label">Matched</div>
+                        <div class="count">{{matchedCount | number}}</div>
+                    </div>
+                    <div class="search_count success" [ngClass]="{active: clickTotalCountMenu == 'missing'}"
+                        (click)="clickActive('missing');">
+                        <div class="label">Added</div>
+                        <div class="count">{{successCount | number}}</div>
+                    </div>
+                    <div class="search_count success" [ngClass]="{active: clickTotalCountMenu == 'update'}"
+                        (click)="clickActive('update');">
+                        <div class="label">Updated</div>
+                        <div class="count">{{updateSucessCount | number}}</div>
+                    </div>
+                    <div class="search_count success" [ngClass]="{active: clickTotalCountMenu == 'void'}"
+                        (click)="clickActive('void');">
+                        <div class="label">Void Bill</div>
+                        <div class="count">{{voidBillCount | number}}</div>
+                    </div>
+
+                    <div class="search_count error" [ngClass]="{active: clickTotalCountMenu == 'validError'}"
+                        (click)="clickActive('validError');">
+                        <div class="label">Soft Error</div>
+                        <div class="count">{{validErrorCount | number}}</div>
+                    </div>
+                    <div class="search_count error" [ngClass]="{active: clickTotalCountMenu == 'invalidError'}"
+                        (click)="clickActive('invalidError');">
+                        <div class="label">Hard Error</div>
+                        <div class="count">{{invalidErrorCount | number}}</div>
+                    </div>
+
+                </div>
+                <div class="col-9">
+                    <div class="content_tab" *ngIf="isTotal">
+                        <div class="blank"></div>
+                        <table class="table table-borderless">
+                            <thead tabindex="1">
+                                <tr>
+                                    <th>Brand</th>
+                                    <!-- <th>Date</th> -->
+                                    <th>Total</th>
+
+                                    <th>
+                                        <small class="icon-info-tooltip" data-tip="Lpaas Missing success Count"
+                                            tabindex="2"><span class="table_header">Added</span>
+                                        </small>
+                                    </th>
+                                    <th>
+                                        <small class="icon-info-tooltip" data-tip="LPaas Redemtion Success Count"
+                                            tabindex="2">
+                                            <span class="table_header">Updated</span>
+                                        </small>
+                                    </th>
+                                    <th>
+                                        <small class="icon-info-tooltip" data-tip="Accural Missing" tabindex="2"><span
+                                                class="table_header">Accural</span>
+                                        </small>
+                                    </th>
+                                    <th>
+                                        <small class="icon-info-tooltip" data-tip="Void bills" tabindex="2">
+                                            <span class="table_header">Void Bills</span>
+                                        </small>
+                                    </th>
+                                    <!-- data-tip="Reprocessable Error" -->
+                                    <th class="softErrorWrap">
+                                        <small class="icon-info-tooltip" data-tip="Reprocessable Error" tabindex="2">
+                                            <span class="table_header" (click)="getSoftErrorList()">Soft Error</span>
+                                        </small>
+                                        <div class="bottom_arrow" *ngIf="isSoftErrorListOpen"></div>
+                                        <div class="tool_tip" *ngIf="isSoftErrorListOpen">
+                                            <div class="wrap_title">
+                                                <h5 class="modal_title">Reprocessable Error List</h5>
+                                                <button class="close" (click)="softErrorListClose()">&times;</button>
+                                            </div>
+
+                                            <div class="list_wrap"
+                                                *ngFor="let SoftErrorList of SoftErrorList;let i = index">
+                                                <ul>
+                                                    <li> <span class="list">{{SoftErrorList}}</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+
+                                    </th>
+                                    <th class="hardErrorWrap">
+                                        <small class="icon-info-tooltip" data-tip="UnReprocessable Error" tabindex="2">
+                                            <span class="table_header" (click)="getHardErrorList()">Hard Error</span>
+                                        </small>
+                                        <div class="bottom_arrow" *ngIf="isHardErrorListOpen"></div>
+                                        <div class="tool_tip" *ngIf="isHardErrorListOpen">
+                                            <div class="wrap_title">
+                                                <h5 class="modal_title">UnReprocessable Error List</h5>
+                                                <button class="close" (click)="hardErrorListClose()">&times;</button>
+                                            </div>
+                                            <div class="list_wrap"
+                                                *ngFor="let hardErrorList of hardErrorList;let i = index">
+                                                <ul>
+                                                    <li> <span class="list">{{hardErrorList}}</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <small class="icon-info-tooltip" data-tip="Reprocess Fail " tabindex="2">
+                                            <span class="table_header">ReProc Err</span>
+                                        </small>
+                                    </th>
+                                    <th class="table_header">
+                                        <small class="icon-info-tooltip" data-tip="Reprocess Successful" tabindex="2">
+                                            <span class="table_header">ReProc Succ</span></small>
+                                    </th>
+                                    <th>Matched</th>
+                                    <th>Remarks</th>
+                                    <th>Status</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let countStatus of arrCountStatus;let i = index"
+                                    [ngClass]="{active: i == activeRow}"
+                                    [style.background]="countStatus.brandErrorSucces.status==1? '#f7c6c4': countStatus.brandErrorSucces.status == 3 ?'#f3dd9d': countStatus.brandErrorSucces.status == 2 ?'#b4eccb': countStatus.brandErrorSucces.status == 4 ? '#f7bd26' : '#ffffff'">
+                                    <td class="text-capitalize">{{countStatus.brandErrorSucces.brandName}}</td>
+                                    <!-- <td>{{startDate | date}} - {{endDate | date}}</td> -->
+                                    <!-- <td>{{newDate | date}} </td> -->
+                                    <td>{{countStatus.brandErrorSucces.totalCount | number}}</td>
+
+                                    <td>
+                                        <div class="success" *ngIf="countStatus.brandErrorSucces.successCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'missing' && i == activeRow}"
+                                            (click)="getMissingMsgCount(i, countStatus.brandErrorSucces, 'missing');clickSubProgram = 'missing'">
+                                            {{countStatus.brandErrorSucces.missingSuccessCount | number}}
+                                        </div>
+                                        <div class="success disable"
+                                            *ngIf="countStatus.brandErrorSucces.successCount == 0">
+                                            {{countStatus.brandErrorSucces.missingSuccessCount}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="success"
+                                            *ngIf="countStatus.brandErrorSucces.missingRedemSuccessCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'update' && i == activeRow}"
+                                            (click)="getUpdateMsgCount(i, countStatus.brandErrorSucces, 'update');clickSubProgram = 'update'">
+                                            {{countStatus.brandErrorSucces.missingRedemSuccessCount | number}}
+                                        </div>
+                                        <div class="success disable"
+                                            *ngIf="countStatus.brandErrorSucces.missingRedemSuccessCount == 0">
+                                            {{countStatus.brandErrorSucces.missingRedemSuccessCount}}
+                                        </div>
+                                    </td>
+                                    <!-- (click)="getUpdateMsgCount(i, countStatus.brandErrorSucces, 'accural');clickSubProgram = 'accural'" -->
+                                    <td>
+                                        <div class="success" *ngIf="countStatus.brandErrorSucces.accuralMissing != 0"
+                                            [ngClass]="{active: clickSubProgram == 'accural' && i == activeRow}">
+                                            {{countStatus.brandErrorSucces.accuralMissing | number}}
+                                        </div>
+                                        <div class="success disable"
+                                            *ngIf="countStatus.brandErrorSucces.accuralMissing == 0">
+                                            {{countStatus.brandErrorSucces.accuralMissing | number}}
+                                        </div>
+                                    </td>
+                                    <!-- <td>{{countStatus.brandErrorSucces.accuralMissing | number}}</td> -->
+                                    <td>
+                                        <div class="success" *ngIf="countStatus.brandErrorSucces.rollBackSuccess != 0"
+                                            [ngClass]="{active: clickSubProgram == 'void' && i == activeRow}"
+                                            (click)="grtRollBackSuccessCount(i, countStatus.brandErrorSucces, 'void');clickSubProgram = 'void'">
+                                            {{countStatus.brandErrorSucces.rollBackSuccess | number}}
+                                        </div>
+                                        <div class="success disable"
+                                            *ngIf="countStatus.brandErrorSucces.rollBackSuccess == 0">
+                                            {{countStatus.brandErrorSucces.rollBackSuccess}}
+                                        </div>
+                                    </td>
+
+                                    <!-- <td>
+                                        <div class="error" *ngIf="countStatus.errorCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'error' && i == activeRow}"
+                                            (click)="errorProgram(i, countStatus, 'error');clickSubProgram = 'error'">
+                                            {{countStatus.errorCount | number}}
+                                        </div>
+                                        <div class="error disable" *ngIf="countStatus.errorCount == 0">
+                                            {{countStatus.errorCount}}
+                                        </div>
+                                    </td> -->
+                                    <td>
+                                        <div class="error" *ngIf="countStatus.brandErrorSucces.validErrorCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'validError' && i == activeRow}"
+                                            (click)="validErrorProgram(i, countStatus.brandErrorSucces, 'validError');clickSubProgram = 'validError'">
+                                            {{countStatus.brandErrorSucces.validErrorCount | number}}
+                                        </div>
+                                        <div class="error disable"
+                                            *ngIf="countStatus.brandErrorSucces.validErrorCount == 0">
+                                            {{countStatus.brandErrorSucces.validErrorCount}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="error" *ngIf="countStatus.brandErrorSucces.invalidErrorCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'invalidError' && i == activeRow}"
+                                            (click)="invalidErrorProgram(i, countStatus.brandErrorSucces, 'invalidError');clickSubProgram = 'invalidError'">
+                                            {{countStatus.brandErrorSucces.invalidErrorCount | number}}
+                                        </div>
+                                        <div class="error disable"
+                                            *ngIf="countStatus.brandErrorSucces.invalidErrorCount == 0">
+                                            {{countStatus.brandErrorSucces.invalidErrorCount}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="error" *ngIf="countStatus.brandErrorSucces.reErrorCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'rerror' && i == activeRow}"
+                                            (click)="reerrorProgram(i, countStatus.brandErrorSucces, 'reerror');clickSubProgram = 'rerror'">
+                                            {{countStatus.brandErrorSucces.reErrorCount | number}}
+                                        </div>
+                                        <div class="error disable"
+                                            *ngIf="countStatus.brandErrorSucces.reErrorCount == 0">
+                                            {{countStatus.brandErrorSucces.reErrorCount}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="error" *ngIf="countStatus.brandErrorSucces.reprocessCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'reprocess' && i == activeRow}"
+                                            (click)="reprocessProgram(i, countStatus.brandErrorSucces, 'reprocess');clickSubProgram = 'reprocess'">
+                                            {{countStatus.brandErrorSucces.reprocessCount | number}}
+                                        </div>
+                                        <div class="error disable"
+                                            *ngIf="countStatus.brandErrorSucces.reprocessCount == 0">
+                                            {{countStatus.brandErrorSucces.reprocessCount}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mapped" *ngIf="countStatus.brandErrorSucces.matchedCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'matched' && i == activeRow}"
+                                            (click)="matchedProgram(i, countStatus.brandErrorSucces, 'matched');clickSubProgram = 'matched'">
+                                            {{countStatus.brandErrorSucces.matchedCount | number}}
+                                        </div>
+
+                                        <div class="mapped disable"
+                                            *ngIf="countStatus.brandErrorSucces.matchedCount == 0">
+                                            {{countStatus.brandErrorSucces.matchedCount}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <!-- *ngIf="alartStatus==1" -->
+                                        <div class="remark_btn_wrap">
+                                            <button type="submit" class="remark_btn" (click)="isInactive(i)"
+                                                *ngIf="countStatus.brandErrorSucces.isSavedRemarks == 0">
+                                                Remarks</button>
+                                            <!-- <div class="tooltip_wrap"> -->
+                                            <div class="bottom_arrow" *ngIf="tooltip && tooltipIdx == i"></div>
+                                            <div class="tool_tip" *ngIf="tooltip && tooltipIdx == i">
+                                                <!-- <h5 class="modal_title">Remarks</h5> -->
+                                                <div class="group ">
+                                                    <div class="checkbox_wrap ">
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="active" name="active"
+                                                                [checked]="checkNOISsue" (click)="openBtn()"
+                                                                data-dismiss="modal">
+                                                            <label for="active">No Issue</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="checkbox" id="inActive" name="inActive"
+                                                                [checked]="checkISsue" (click)="openTextArea()">
+                                                            <label for="inActive">Issue in Bills</label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal_footer" *ngIf="noIssueBtn">
+                                                    <button type="button" class="action_btn_cancel"
+                                                        (click)="closeNoIssueBtn()">Cancel</button>
+                                                    <button type="button" class="action_btn_save" data-dismiss="modal"
+                                                        (click)="fixBrandData(countStatus.brandErrorSucces,i)">Save</button>
+                                                </div>
+                                                <div class="modal_body" *ngIf="inActive">
+                                                    <textarea class="textarea_input" type="text" name="feedback"
+                                                        [(ngModel)]="feedbacktext" required id="feedback_text"
+                                                        (keyup)="textareaValidation()"></textarea>
+                                                    <span class="errortxt">{{errortext}}</span>
+                                                </div>
+                                                <div class="modal_footer" *ngIf="inActive">
+                                                    <button type="button" class="action_btn_cancel"
+                                                        (click)="closeTooltip()">Cancel</button>
+                                                    <button type="button" class="action_btn_save" data-dismiss="modal"
+                                                        (click)="saveRemark(countStatus.brandErrorSucces)">Save</button>
+                                                </div>
+                                            </div>
+                                            <div class="edit_field_btn remarks_tooltip"
+                                                *ngIf="countStatus.brandErrorSucces.isSavedRemarks == 1">
+                                                <small class="icon-info-tooltip"
+                                                    [attr.data-tip]="countStatus.brandErrorSucces.remarks" tabindex="2">
+                                                    <button type="submit" class="remark_btn disable">Remarks</button>
+                                                </small>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div *ngIf="countStatus.isError">
+                                            <small class="icon-info-tooltip" [attr.data-tip]="countStatus.errorMessage"
+                                                tabindex="2">
+                                                <img src="/assets/images/view.svg">
+                                            </small>
+                                        </div>
+                                        <div *ngIf="!countStatus.isError">
+                                        </div>
+                                    </td>
+
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+
+                        <div class="colorDis_wrap">
+                            <div class="color_wrap">
+                                <div class="notCheck_color_wrap"></div>
+                                <span class="colorDis">Not Checked</span>
+                            </div>
+                            <div class="color_wrap">
+                                <div class="update_color_wrap"></div>
+                                <span class="colorDis">Not Checked & Exceed Threshold</span>
+                            </div>
+                            <div class="color_wrap">
+                                <div class="validate_color_wrap"></div>
+                                <span class="colorDis">Validated</span>
+                            </div>
+                            <div class="color_wrap">
+                                <div class="discrepency_color_wrap"></div>
+                                <span class="colorDis">Discrepancy</span>
+                            </div>
+                            <div class="color_wrap">
+                                <div class="discrepencythresold_color_wrap"></div>
+                                <span class="colorDis">Discrepancy & Exceed Threshold</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="content_tab" *ngIf="!isTotal">
+                        <div class="loading-container" *ngIf="!arrErrorCount.length">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        <table class="table table-borderless error">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="allError" (change)="getErrStatusCodeAll()"
+                                                    [checked]="isSelectClearError">
+                                                <label for="allError">All</label>
+                                            </div>
+                                        </div>
+                                        {{errorMsgType}}
+                                    </th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let errCount of arrErrorCount;let i = index">
+                                    <td>
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="{{i}}" (change)="getErrStatusCode(errCount)"
+                                                    [checked]="isSelectAllError">
+                                                <label for="{{i}}">{{errCount.remarks}}</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="code">{{errCount.count | number}}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="isClickedRow" class="table_wrap">
+                <div class="row program_table_header">
+                    <div class="program_title col">
+                        <div class="title">
+                            <p>{{activeProgramName}}</p>
+                        </div>
+
+
+                        <div class="download_btn_wrap">
+                            <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                <img class="img_refresh" src="/assets/images/downloadTable.svg" (click)="downloadCSV()">
+                            </small>
+                        </div>
+                    </div>
+                    <!-- <div class="program_tab_btn col">
+                    <ul>
+                        <li [ngClass]="{active: clickSubProgram == 'success'}">
+                            <a href="javascript:;">Success</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">Error</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">Matched</a>
+                        </li>
+                    </ul>
+                 </div> -->
+                    <!-- <div class="btn-group download_file col">
+                        <a data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                            Download File
+                        </a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="javascript:;" (click)="exportTableCsv()">CSV</a></li>
+                        </ul>
+                    </div> -->
+                </div>
+                <div class="table_container">
+                    <app-table [arrTable]="dataSource" [arrSelectedProgram]="arrTransactionData"></app-table>
+
+                </div>
+
+            </div>
+            <!-- after search end -->
+        </div>
+    </div>
+</section>
+
+<!-- 
+
+<div class="remark_wrap">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Remarks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="group ">
+                        <div class="checkbox_wrap ">
+                            <div class="form-group">
+                                <input type="checkbox" id="active" name="active" [checked]="active"
+                                    (click)="fixBrandData()" data-dismiss="modal">
+                                <label for="active">Fixed</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" id="inActive" name="inActive" [checked]="inActive"
+                                    (click)="openTextArea()">
+                                <label for="inActive">UnFixed</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <textarea *ngIf="inActive" class="textarea_input" type="text" name="feedback"
+                        [(ngModel)]="feedbacktext"></textarea>
+                    <button type="button" class="action_btn_save">Save</button>
+
+
+                </div>
+                <div class="modal-footer" *ngIf="inActive">
+                    <button type="button" class="action_btn_cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="action_btn_save" data-dismiss="modal"
+                        (click)="saveRemark()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  -->

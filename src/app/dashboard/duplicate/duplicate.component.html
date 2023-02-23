@@ -1,0 +1,37 @@
+<div class="modal-body">
+    <button type="button" class="close" (click)="closeModal()">&times;</button>
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th>Bill No.</th>
+                <th>Bill Date</th>
+                <th>Store Code</th>
+                <th>Insertion Date</th>
+                <th>File Name</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let duplicate of duplicateData;let i = index">
+                <td>
+                    {{duplicate.billNo}}
+                </td>
+                <td>
+                    {{duplicate.billDate}}
+                </td>
+                <td>
+                    {{duplicate.storeCode}}
+                </td>
+                <td>
+                    {{duplicate.insertionDate}}
+                </td>
+                <td>
+                    {{duplicate.fileName}}
+                </td>
+                <td>
+                    {{duplicate.remarks}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

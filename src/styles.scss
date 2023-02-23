@@ -1,0 +1,181 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-roboto;
+  .hide{display: none !important;}
+  @include table;
+  a[href*="https://www.froala.com/wysiwyg-editor?k=u"] {
+    display: none;
+  }
+  .alert {
+    @include paragraph;
+    margin: 0;
+    padding: 5px;
+    font-size: 12px;
+    background-color: rgba($color-info, 0.2);
+    border-radius: 3px;
+    display: inline-block;
+    i {
+      color: $color-info;
+      margin-right: 5px;
+    }
+  }
+  .fa-trash{cursor: pointer;}
+  .ng-touched.ng-valid[required],
+  .ng-touched.ng-valid.required {
+    border: 1px solid $color-green !important;
+  }
+
+  .ng-touched.ng-invalid:not(form) {
+    border: 1px solid $color-red !important;
+  }
+  .ng-invalid:not(form) + label {
+    &:before {
+      border: 1px solid $color-red !important;
+    }
+  }
+  /*
+   server-side-angular-way.component.css
+*/
+  // .modal-content {
+  //   height: 550px !important;
+  //   overflow-y: auto !important;
+  // }
+  .theme-green .bs-datepicker-head {
+    background-color: $theme-color !important;
+  }
+  mat-calendar {
+    height: auto !important;
+    padding-bottom: 20px;
+  }
+  .disable {
+    cursor: not-allowed !important;
+  }
+  .full-width {
+    width: 100%;
+  }
+  .ngx-mat-drp-presets-list {
+    li {
+      color: $color-light-black !important;
+      &:hover {
+        background-color: $theme-color !important;
+        color: $color-white !important;
+      }
+    }
+  }
+  .ngx-mat-drp-date-label {
+    label {
+      @include label;
+      display: inline-flex;
+    }
+  }
+  .mat-calendar-table {
+    thead {
+      background-color: transparent;
+      tr {
+        th {
+          padding: 5px 8px 5px 8px !important;
+          line-height: normal;
+        }
+      }
+    }
+    tbody {
+      tr {
+        box-shadow: none !important;
+        td {
+          border: 0 !important;
+          padding: 10px !important;
+          font-size: 12px !important;
+        }
+      }
+    }
+  }
+  .date {
+    mat-form-field {
+      min-width: 100% !important;
+      .ngx-mat-drp-menu {
+        ul {
+          li {
+            color: $color-light-black !important;
+          }
+        }
+      }
+    }
+  }
+  .mat-form-field-wrapper {
+    .mat-form-field-flex {
+      .mat-form-field-infix {
+        padding-bottom: 0;
+        border: 0 !important;
+        padding: 0 !important;
+        label.mat-form-field-label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .mat-form-field-infix {
+    input {
+      @include input;
+      margin-bottom: 0;
+      color: $color-light-black !important;
+    }
+  }
+
+  .mat-form-field-underline {
+    display: none;
+  }
+
+  .mat-progress-spinner circle,
+  .mat-spinner circle,
+  .spinner-border {
+    stroke: $theme-color !important;
+    color: $theme-color;
+  }
+  
+  .mat-table {
+    background-color: $color-light-grey;
+  }
+  tr.mat-header-row {
+    height: auto;
+  }
+  .main_container {
+    max-width: 1920px;
+    width: 100%;
+    background-color: $body-bg-color;
+    margin: 0 auto;
+    min-height: 100vh;
+    .dropdown-menu.dropdown-menu-right.dropdown {
+      left: unset;
+      width: 190px;
+    }
+
+    .tab-content > .active {
+      display: flex;
+    }
+  }
+
+  .daterangepicker td.active,
+  .daterangepicker td.active:hover {
+    background: $theme-color !important;
+  }
+
+  .daterangepicker .drp-buttons .btn {
+    @include button;
+    padding: 5px 10px !important;
+    min-width: auto !important;
+  }
+}
+.container{
+  width: 100%;
+  max-width: 100%;
+}

@@ -1,0 +1,139 @@
+<!-- card-panel styles -->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            Loading! Please wait ...
+        </button>
+    </div>
+    <div class="container">
+        <div class="page_content_dash">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" name="form"
+                    (ngSubmit)="searchFilter.form.valid && getSearchData(searchFilter);" novalidate>
+                    <div class="row">
+                        <div class="form-group col-3">
+                            <label>Select Program</label>
+                            <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                {{selectedProgram}}
+                                <input type="hidden" name="programName" [(ngModel)]="selectedProgram"
+                                    [value]="selectedProgram" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Program.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                <ul>
+                                    <li *ngFor="let program of tenantCode;let i = index">
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="radio" id="{{program.brandId}}" name="brandName"
+                                                    (change)="getselectedProgram(program)" [checked]="program.isSelect">
+                                                <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="text-center see_all" (click)="seeAllPrograms()">
+                                    <p>See All Program</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-2">
+                            <label>Select Month</label>
+                            <input [(ngModel)]="requetDate" autocomplete="off" name="requetDate" bsDatepicker
+                                [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)" required>
+                            <img src="assets/images/calendar.svg" (onShown)="onOpenCalendar($event)">
+                            <!-- #fromDate="ngModel" -->
+                        </div>
+
+                        <div class="form-group col-2 action_btn">
+                            <button type="submit">
+                                <span *ngIf="searchInProgress && isLoading"
+                                    class="text-light spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
+                                Search</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-4 digital-reciept" *ngIf="isTableData">
+        <div class="container">
+            <div class="card">
+                <div class='card-body'>
+                    <div class="title d-flex justify-content-between">
+                        <div class="table_heading_wrap">
+                            <h3>Recon Status Summary</h3>
+                            <div>
+                                <small class="icon-info-tooltip" data-tip="Recon status summary" tabindex="2">
+                                    <img class="img_refresh" src="/assets/images/downloadTable.svg"
+                                        (click)="downloadCSV()">
+                                </small>
+                            </div>
+                            <!-- <button (click)="downloadCSV()" class="btndownload">Download table</button> -->
+                        </div>
+                        <div>
+                            <button type="button" class="close" data-dismiss="modal"
+                                (click)="backbutton()">&times;</button>
+                        </div>
+
+
+                        <!-- <div *ngIf="dataNotFoundMsg" class="d-flex justify-content-center mt-4 ">sorry!! no data found</div> -->
+                    </div>
+
+                    <div class='mt-4 dr-table'>
+                        <!-- <div class="reconLoadingData" *ngIf="loadingData">
+                            <button class="btn btn-dark">
+                                <span class="text-light spinner-border spinner-border-sm"></span>
+                                <span>Loading! Please wait ...</span>
+                            </button>
+                        </div> -->
+
+                        <table>
+                            <tbody>
+                                <tr class="table-header mobile-table">
+                                    <th>program&nbsp;Name</th>
+                                    <th>Process&nbsp;Date</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                    <th>Remark&nbsp;Submission&nbsp;Date</th>
+                                    <th>Threshold&nbsp;Exceed</th>
+                                </tr>
+                                <tr class="mobile-table-tr" *ngFor="let inoviceDatas of reconSummary;let i = index">
+                                    <th>{{inoviceDatas.programName}}</th>
+                                    <th>{{inoviceDatas.recon_ProcessDate | date}}</th>
+                                    <th>
+                                        <span *ngIf="inoviceDatas.isIssue == 0 || inoviceDatas.isIssue == 1">Not checked</span>
+                                        <span *ngIf="inoviceDatas.isIssue == 2">No issue</span>
+                                        <span *ngIf="inoviceDatas.isIssue == 3 || inoviceDatas.isIssue == 4">There was some issue</span>
+                                       
+                                    </th>
+                                    <th>{{inoviceDatas.remarks}}</th>
+                                    <th>{{inoviceDatas.remarkSubMissionDate | date}}</th>
+                                    <th ><span *ngIf="inoviceDatas.isThresholExceed == 0">No</span>
+                                        <span *ngIf="inoviceDatas.isThresholExceed == 1">Yes</span>
+                                        
+                                        </th>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

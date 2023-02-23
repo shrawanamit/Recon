@@ -1,0 +1,410 @@
+<!-- card-panel styles -->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            Loading! Please wait ...
+        </button>
+    </div>
+    <div class="container">
+        <div class="page_content_dash">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" name="form"
+                    (ngSubmit)="searchFilter.form.valid && getSearchData(searchFilter);" novalidate>
+                    <div class="row">
+                        <div class="form-group col-2">
+                            <label>Select Report Type</label>
+                            <select name="ReportType" [(ngModel)]="ReportType"
+                                (ngModelChange)="SelectReportType(ReportType)" required #reporttype="ngModel">
+                                <option [ngValue]="1">Summary Report</option>
+                                <option [ngValue]="2">Store Wise Summary Report</option>
+                            </select>
+                            <div
+                                *ngIf="searchFilter.submitted || reporttype.invalid && (reporttype.dirty || reporttype.touched)">
+                                <div class="alert alert-danger" *ngIf="reporttype.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Report Type.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-2">
+                            <label>Select Program</label>
+                            <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                {{selectedProgram}}
+                                <input type="hidden" name="tenantCode" [(ngModel)]="selectedProgram"
+                                    [value]="selectedProgram" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Program.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                <ul>
+                                    <li *ngFor="let program of tenantCode;let i = index">
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="radio" id="{{program.tenantID}}" name="brandName"
+                                                    (click)="getselectedProgram(program,i)"
+                                                    [checked]="program.isSelect">
+                                                <label for="{{program.tenantID}}">{{program.tenantCode}}</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <!-- <div class="text-center see_all" (click)="seeAllPrograms()">
+                                    <p>See All Program</p>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="form-group col-2">
+                            <label>Filter By</label>
+                            <select name="SettlementSatus" [(ngModel)]="SettlementSatus"
+                                (ngModelChange)="changeSettData(SettlementSatus)" required #settlementSatus="ngModel">
+                                <option [ngValue]="1">Date Range</option>
+                                <option [ngValue]="2">Month</option>
+                            </select>
+                            <div
+                                *ngIf="searchFilter.submitted || settlementSatus.invalid && (settlementSatus.dirty || settlementSatus.touched)">
+                                <div class="alert alert-danger" *ngIf="settlementSatus.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Settelment Data.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-2" *ngIf="isMonthSelect">
+                            <label>Select Month</label>
+                            <input [(ngModel)]="requetDate" autocomplete="off" name="requetDate" bsDatepicker
+                                [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)" required>
+                            <img class="monthImg" src="assets/images/calendar.svg" (onShown)="onOpenCalendar($event)">
+                            <!-- #fromDate="ngModel" -->
+                        </div>
+                        <div class="form-group col-3 date" *ngIf="isDateSelect">
+                            <label>Date</label>
+                            <!-- <input type="text" id="daterange" value="{{editDate}}" />  -->
+                            <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                                #dateRangePicker></ngx-mat-drp>
+                            <img class="dateImg" src="/assets/images/calendar.svg">
+                            <!-- <input id="searhDate" type="date" (change)="Filters($event)" [value]="newDate" /> -->
+                        </div>
+
+                        <div class="form-group col-2 action_btn">
+                            <button type="submit">
+                                <span *ngIf="searchInProgress && isLoading"
+                                    class="text-light spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
+                                Search</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="container">
+    <!-- <div class="reconLoadingData" *ngIf="loadingData">
+            <button class="btn btn-dark">
+                <span class="text-light spinner-border spinner-border-sm"></span>
+                Loading! Please wait ...
+            </button>
+        </div> -->
+    <div *ngIf="summaryData">
+        <div class="box_wrap" *ngFor="let data of DrSummary;let i = index">
+
+            <div class="heading_wrap">
+                <div class="heading_container">
+                    <span class="heading">{{data.tenantCode}} Summary</span>
+                    <span class="heading" *ngIf="isMonthSelect">({{requestDate | date }})</span>
+                    <span class="heading" *ngIf="isDateSelect">({{startDate | date}} - {{endDate | date}})</span>
+                    <!-- <span class="heading">Hit Ratio {{data.hitRatio}}%</span> -->
+                </div>
+                <!-- <div class="download_btn_wrap">
+                <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                    <img class="img_refresh" src="/assets/images/downloadFileNew.png" (click)="downloadCSV()">
+                </small>
+            </div> -->
+            </div>
+
+            <div class="container_new">
+                <div class="level-1 rectangle">Total Transaction - {{data.totalBills}},
+                    <span class="hit-ratio">Hit Ratio-{{data.hitRatio}}%</span>
+                    <div class="download_btn_wrap">
+                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                            <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                (click)="downloadCSV('All')">
+                        </small>
+                    </div>
+                </div>
+                <ol class="level-2-wrapper">
+                    <li>
+                        <h2 class="level-2 rectangle">Non-Print Transaction - {{data.nonPrint}}
+                            <div class="download_btn_wrap">
+                                <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                    <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                        (click)="downloadCSV('NonPrint')">
+                                </small>
+                            </div>
+                        </h2>
+                        <ol class="level-3-wrapper">
+                            <li>
+                                <h3 class="level-3 rectangle">Success - {{data.successNonPrint}}
+                                    <div class="download_btn_wrap">
+                                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                            <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                                (click)="downloadCSV('S_NonPrint')">
+                                        </small>
+                                    </div><br />
+                                    <span> SMS Ratio - {{SMSSentRatio}}%</span>
+
+                                </h3>
+                            </li>
+                            <li>
+                                <h3 class="level-3 rectangle">Fail - {{data.failNonPrint}}
+                                    <div class="download_btn_wrap">
+                                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                            <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                                (click)="downloadCSV('F_NonPrint')">
+                                        </small>
+                                    </div>
+                                </h3>
+                            </li>
+                        </ol>
+                    </li>
+                    <li class="level2">
+                        <h2 class="level-2 rectangle">Print Transaction - {{data.print}}
+                            <div class="download_btn_wrap">
+                                <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                    <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                        (click)="downloadCSV('Print')">
+                                </small>
+                            </div>
+                        </h2>
+                        <ol class="level-3-wrapper">
+                            <li>
+                                <h3 class="level-3 rectangle">Success - {{data.successPrint}}
+                                    <div class="download_btn_wrap">
+                                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                            <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                                (click)="downloadCSV('S_Print')">
+                                        </small>
+                                    </div>
+                                </h3>
+                            </li>
+                            <li>
+                                <h3 class="level-3 rectangle">Fail - {{data.failPrint}}
+                                    <div class="download_btn_wrap">
+                                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                            <img class="img_refresh" src="/assets/images/downloadFileNew.png"
+                                                (click)="downloadCSV('F_Print')">
+                                        </small>
+                                    </div>
+                                </h3>
+
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+                <ol class="level-4-wrapper">
+                    <li>
+                        <h3 class="level-4 rectangle">SMS Communication - {{data.sms}}</h3>
+                    </li>
+                    <li>
+                        <h3 class="level-4 rectangle">WhatsApp Communication - {{data.whatsAPP}}</h3>
+                    </li>
+                    <li>
+                        <h3 class="level-4 rectangle">Email Communication - {{data.email}}</h3>
+                    </li>
+                    <li>
+                        <h3 class="level-4 rectangle">Reciept Email Request - {{data.emailThruReceipt}}</h3>
+                    </li>
+                </ol>
+
+            </div>
+        </div>
+    </div>
+    <div class="store_wise"  *ngIf="storeWiseSummary">
+
+        <div class="table_heading_wrap">
+            <h3>Store Wise Summary</h3>
+            <div>
+                <small class="icon-info-tooltip" data-tip="Download Store Wise summary" tabindex="2">
+                    <img class="img_refresh" src="/assets/images/downloadTable.svg" (click)="downloadcsvOptionsStoreWise()">
+                </small>
+            </div>
+            <!-- <button (click)="downloadCSV()" class="btndownload">Download table</button> -->
+        </div>
+        <div class='dr-table'>
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th>#S.No</th>
+                        <th>#Store_Code</th>
+                        <th>#Total_Bills</th>
+                        <th>#Success_Bills</th>
+                        <th>#Failed_Bills</th>
+                        <th>#Readcount</th>
+                        <th>#Open_Percentage</th>
+
+                    </tr>
+                    <tr *ngFor="let datas of storeWiseSummaryData;let i = index">
+                        <th>{{i+1}}</th>
+                        <th>{{datas.storecode}}</th>
+                        <th>{{datas.totalBills}}</th>
+                        <th>{{datas.successBills}}</th>
+                        <th>{{datas.failedBills}}</th>
+                        <th>{{datas.readcount}}</th>
+                        <th>{{datas.openPercentage}}%</th>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="tableContainer" *ngIf="loadingTable">
+        <div class="heading_wrap">
+            <div class="heading_container">
+                <h4 class="table_heading" *ngIf="MonthWiseSummaryData.length>0">Bill Details #{{selectedProgram}}
+                    ({{requestDate | date}}) -&nbsp;
+                    <h4 *ngIf="!isFailed" class="table_heading_count" (click)="closeTooltip()">
+                        Fail {{MonthWiseSummaryData.length}}</h4>
+                </h4>
+                <!-- <div *ngIf="isTooltipOpen" class="bottom_arrow"></div> -->
+                <div *ngIf="isTooltipOpen" class="tool_tip">
+                    <button type="button" class="close close_tooltip" (click)="closeTooltipCross()">&times;</button>
+                    <div class='dr-table'>
+                        <table>
+                            <tbody>
+                                <tr class="table-header">
+                                    <th>S.No</th>
+                                    <th>Error Message</th>
+                                    <th>Count</th>
+                                </tr>
+                                <tr *ngFor="let datas of toolTipFailValue;let i = index">
+                                    <th>{{i+1}}</th>
+                                    <th>{{datas.label}}</th>
+
+                                    <th (click)="getSummaryByFailedMsg(datas)">
+                                        <span class="totalbill_wrap">
+                                            {{datas.value}}
+                                        </span>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <small class="icon-info-tooltip" data-tip="Download Fail Bills" tabindex="2">
+                        <span class="img_download">
+                            <img src="/assets/images/downloadTable.svg" (click)="downloadFailBillSummary()">
+                        </span>
+                    </small>
+                </div>
+
+            </div>
+            <div class="closeBtnContainer">
+                <button type="button" class="close" (click)="backButton()">&times;</button>
+            </div>
+        </div>
+        <div class='mt-2 dr-table'>
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th>S.No</th>
+                        <!-- <th>Request Date</th> -->
+                        <th>Brand Name</th>
+                        <th>#Bill NO</th>
+                        <th>#Bill Date</th>
+                        <th>#Store Code</th>
+                        <th>#Customer&nbsp;Name</th>
+                        <th>#Mobile No</th>
+                        <!-- <th>#Email</th> -->
+                        <!-- <th>#Short URL</th>
+                            <th>#Base URL</th>
+                            <th>#Read&nbsp;Count</th> -->
+                        <th>#Status</th>
+                        <th>#Error Message</th>
+                        <!-- <th>View Logs</th> -->
+                    </tr>
+                    <tr *ngFor="let datas of MonthWiseSummaryData;let i = index">
+                        <th>{{i+1}}</th>
+                        <!-- <th>{{datas.requetDate | date}}</th> -->
+                        <th>{{datas.progCode}}</th>
+                        <th>
+
+                            {{datas.billNo}}
+
+                            <!-- <label class="resend" *ngIf=totalIsClick.includes(i)>see summary below</label> -->
+                        </th>
+                        <th>
+
+                            {{datas.billDate | date}}
+
+                        </th>
+                        <th>
+
+                            {{datas.storecode}}
+                        </th>
+                        <th>
+
+                            {{datas.customerName}}
+                        </th>
+                        <th>
+
+                            {{datas.mobileNo}}
+
+                        </th>
+                        <!-- <th>
+                                
+                                    {{datas.emailID}}
+                                
+                            </th> -->
+                        <!-- <th>
+                                <p class="totalbill_wrap wap_count_wrap">
+                                    {{datas.shortURL}}
+                                </p>
+                            </th>
+                            <th>
+                                <p class="totalbill_wrap wap_count_wrap">
+                                    {{datas.baseURL}}
+                                </p>
+                            </th>
+                            <th>
+                                <p class="totalbill_wrap wap_count_wrap">
+                                    {{datas.readCount}}
+                                </p>
+                            </th> -->
+                        <th>
+
+                            {{datas.status}}
+
+                        </th>
+                        <th>
+
+                            {{datas.errorMessage}}
+
+                        </th>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

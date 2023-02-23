@@ -1,0 +1,464 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+
+.mat-paginator {
+    display: block;
+    width: 100%;
+}
+.pannel-section {
+    .reconLoadingData {
+        @include loader;
+    }
+    .container {
+        .page_content_dash {
+            background: $color-white;
+            margin: 20px auto;
+            padding: 10px;
+            border-radius: 5px;
+            .filter_input_wrap {
+                .row {
+                    .form-group {
+                        // position: relative;
+                        margin-bottom: 25px;
+                        .text-danger {
+                            @include paragraph;
+                        }
+                        label {
+                            @include label;
+                        }
+                        select,
+                        .selected_text {
+                            @include selectBox;
+                            text-transform: capitalize;
+                        }
+                        input {
+                            @include input;
+                            margin: 0;
+                            // width: 0%;
+                        }
+                        // img {
+                        //     position: absolute;
+                        //     right: 46px;
+                        //     top: 37px;
+                        //     z-index: 99;
+                        // }
+                        .monthImg {
+                            position: absolute;
+                            right: 26px;
+                            top: 37px;
+                            z-index: 99;
+                        }
+                        .dateImg {
+                            position: absolute;
+                            right: 46px;
+                            top: 37px;
+                            z-index: 99;
+                        }
+                        .selected_text {
+                            height: 41px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 300px;
+                            padding-right: 25px;
+                            cursor: pointer;
+                        }
+                        .dropdown_multiselect {
+                            ul {
+                                @include img-box-shadow;
+                                margin: 0;
+                                padding: 0;
+                                list-style: none;
+                                background: $color-white;
+                                position: absolute;
+                                width: 89%;
+                                top: 70px;
+                                z-index: 99;
+                                height: 300px;
+                                overflow-y: auto;
+                                li {
+                                    padding: 10px;
+                                    .checkbox_wrap {
+                                        @include checkbox;
+                                        @include radio;
+                                        label {
+                                            width: 100%;
+                                            padding-left: 0 !important;
+                                            &:before {
+                                                left: 93% !important;
+                                                border: none !important;
+                                            }
+                                            &:after {
+                                                left: 90% !important;
+                                                background: none !important;
+                                                border: none !important;
+                                            }
+                                            text-transform: capitalize;
+                                        }
+                                        .form-group {
+                                            margin-bottom: 0;
+                                            input[type="radio"] {
+                                                &:checked + label {
+                                                    color: $theme-color;
+                                                    &:after {
+                                                        content: "";
+                                                        display: block;
+                                                        position: absolute;
+                                                        top: 3px !important;
+                                                        right: 13px !important;
+                                                        width: 7px !important;
+                                                        height: 14px !important;
+                                                        border: solid $theme-color !important;
+                                                        border-width: 0 2px 2px 0 !important;
+                                                        transform: rotate(45deg) !important;
+                                                        border-radius: 0% !important;
+                                                    }
+                                                }
+                                            }
+                                            input[type="checkbox"] {
+                                                &:checked + label {
+                                                    color: $theme-color;
+                                                    &:after {
+                                                        content: "";
+                                                        display: block;
+                                                        position: absolute;
+                                                        top: 3px !important;
+                                                        right: 13px !important;
+                                                        width: 7px !important;
+                                                        height: 14px !important;
+                                                        border: solid $theme-color !important;
+                                                        border-width: 0 2px 2px 0 !important;
+                                                        transform: rotate(45deg) !important;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    &:hover {
+                                        background-color: rgba($theme-color, 0.06);
+                                    }
+                                }
+                            }
+                            .see_all {
+                                position: absolute;
+                                top: 326px;
+                                z-index: 99;
+                                width: 78%;
+                                left: 15px;
+                                padding: 10px;
+                                background: $color-white;
+                                cursor: pointer;
+                                color: $theme-color;
+                                p {
+                                    margin: 0 auto;
+                                }
+                            }
+                        }
+                        .dropdown_multiselect_mode {
+                            ul {
+                                @include img-box-shadow;
+                                margin: 0;
+                                padding: 0;
+                                list-style: none;
+                                background: $color-white;
+                                position: absolute;
+                                width: 89%;
+                                top: 70px;
+                                z-index: 99;
+                                height: 300px;
+                                overflow-y: auto;
+                                li {
+                                    // padding: 10px;
+
+                                    .multiselect_mode_type {
+                                        padding: 10px;
+                                        .checkbox_wrap {
+                                            @include checkbox;
+                                            @include radio;
+                                            label {
+                                                width: 100%;
+                                                padding-left: 0 !important;
+                                                &:before {
+                                                    left: 93% !important;
+                                                    border: none !important;
+                                                }
+                                                &:after {
+                                                    left: 90% !important;
+                                                    background: none !important;
+                                                    border: none !important;
+                                                }
+                                                text-transform: capitalize;
+                                            }
+                                            .form-group {
+                                                margin-bottom: 0;
+                                                input[type="radio"] {
+                                                    &:checked + label {
+                                                        color: $theme-color;
+                                                        &:after {
+                                                            content: "";
+                                                            display: block;
+                                                            position: absolute;
+                                                            top: 3px !important;
+                                                            right: 13px !important;
+                                                            width: 7px !important;
+                                                            height: 14px !important;
+                                                            border: solid $theme-color !important;
+                                                            border-width: 0 2px 2px 0 !important;
+                                                            transform: rotate(45deg) !important;
+                                                            border-radius: 0% !important;
+                                                        }
+                                                    }
+                                                }
+                                                input[type="checkbox"] {
+                                                    &:checked + label {
+                                                        color: $theme-color;
+                                                        &:after {
+                                                            content: "";
+                                                            display: block;
+                                                            position: absolute;
+                                                            top: 3px !important;
+                                                            right: 13px !important;
+                                                            width: 7px !important;
+                                                            height: 14px !important;
+                                                            border: solid $theme-color !important;
+                                                            border-width: 0 2px 2px 0 !important;
+                                                            transform: rotate(45deg) !important;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .multiselect_mode_type:hover {
+                                        background-color: rgba($theme-color, 0.06);
+                                    }
+                                }
+                            }
+                        }
+
+                        // .select_wrap {
+                        //     select {
+                        //         option {
+                        //             color: #ffffff;
+                        //             min-height: 40px;
+                        //             background-color: #4a4a4a;
+                        //             padding: 20px !important;
+                        //             :hover{
+                        //                 background-color: green !important;
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                    }
+                    .action_btn {
+                        display: inline-flex;
+                        align-items: flex-start;
+                        margin: 0;
+                        margin-top: 26px;
+                        button {
+                            @include button;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
+        .dqr_table_wrap {
+            position: relative;
+            .loading-container {
+                position: absolute;
+                left: 50%;
+                top: 20%;
+                z-index: 99;
+            }
+        }
+        .card {
+            border: none;
+
+            .summary_heading_wrap {
+                width: 100%;
+                vertical-align: middle;
+                padding: 20px;
+                // padding-bottom: 0px;
+                display: flex;
+                justify-content: space-between;
+                .summary_heading {
+                    font-size: 14px;
+                    color: #6a6a6a;
+                    text-align: left;
+
+                    .summary_heading_main {
+                        font-weight: 400;
+                    }
+                    p {
+                        font-weight: 500;
+                        padding-top: 3px;
+                        margin: 0px;
+                    }
+                }
+
+                .edit_field {
+                    width: 30px;
+                    margin-right: 0;
+                    // margin-left: auto;
+                    height: 30px;
+                    line-height: 30px;
+                    text-align: center;
+                    vertical-align: middle;
+                    background: #f4f4f4;
+                    border-radius: 2px;
+                    cursor: pointer;
+                    opacity: 0.6;
+                    margin-right: 20px;
+                }
+            }
+
+            .title {
+                color: #6a6a6a;
+                .table_heading_wrap {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                    vertical-align: middle;
+                    background-color: lightyellow;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    padding-left: 10px;
+                    .heading {
+                        h3 {
+                            font-weight: 500;
+                            font-size: 18px;
+                            color: #000000;
+                            // .program_name{
+                            //     font-size: 14px;
+                            //     font-weight: 400;
+                            //     padding-bottom: 7px;
+                            // }
+                        }
+                    }
+                    .edit_field {
+                        width: 30px;
+                        margin-right: 0;
+                        margin-left: auto;
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        vertical-align: middle;
+                        background: #f4f4f4;
+                        border-radius: 2px;
+                        cursor: pointer;
+                        opacity: 0.6;
+                        margin-right: 20px;
+                        // button.close {
+                        //     position: absolute;
+                        //     right: 22px;
+                        //     top: 24px;
+                        //     padding: 5px;
+                        //     background: $color-white;
+                        //     border-radius: 50%;
+                        //     width: 25px;
+                        //     height: 25px;
+                        //     line-height: 11px;
+                        //     vertical-align: middle;
+                        //     outline: none;
+                        // }
+                        .img_refresh {
+                            // padding-left: 6px;
+                            // padding-right: 20px;
+                        }
+
+                        .icon-info-tooltip {
+                            @include default-tool-tip;
+                        }
+                    }
+                }
+
+                input {
+                    background: #f9f9f9;
+                    border: 1px solid #f9f9f9;
+                    outline: none;
+                    color: #959795;
+                }
+            }
+            .space {
+                width: 100%;
+                height: 15px;
+                background-color: #f3f3f3;
+            }
+
+            .dr-table {
+                max-height: 400px;
+                overflow-y: auto;
+
+                // table.dataTable thead .sorting:after,
+                // table.dataTable thead .sorting:before,
+                // table.dataTable thead .sorting_asc:after,
+                // table.dataTable thead .sorting_asc:before,
+                // table.dataTable thead .sorting_asc_disabled:after,
+                // table.dataTable thead .sorting_asc_disabled:before,
+                // table.dataTable thead .sorting_desc:after,
+                // table.dataTable thead .sorting_desc:before,
+                // table.dataTable thead .sorting_desc_disabled:after,
+                // table.dataTable thead .sorting_desc_disabled:before {
+                //   bottom: 0.5em;
+                // }
+                table {
+                    width: 100%;
+                    text-align: left;
+                }
+
+                .table-header {
+                    th {
+                        background-color: $theme-color;
+                        line-height: 25px;
+                        color: #ffffff;
+                        font-size: 14px;
+                        font-weight: 400;
+                        vertical-align: middle;
+                        padding: 10px;
+                        border: none;
+                        position: sticky;
+                        top: 0;
+                    }
+                }
+                tr {
+                    background-color: white;
+                    line-height: 30px;
+
+                    color: #959795;
+                    font-size: 13px;
+                    font-weight: 300;
+                    th {
+                        min-width: 100px;
+                        background-color: $color-white;
+                        padding: 10px;
+                        // text-transform: capitalize;
+                        border-bottom: 1px solid #eeecec !important;
+                        color: #4a4a4a;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 26px;
+                        font-family: "Roboto", sans-serif;
+                        text-align: left;
+                        margin: 0 auto;
+                        vertical-align: middle;
+                    }
+                }
+                .button-style {
+                    background: none;
+                    border: none;
+                    outline: none;
+                    color: #959795;
+                    font-size: 18px;
+                }
+            }
+            .no_data_found {
+                padding: 50px;
+                font-size: 30px;
+                font-weight: bold;
+                line-height: 1.3;
+                color: #959795;
+            }
+        }
+    }
+}

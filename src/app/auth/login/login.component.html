@@ -1,0 +1,39 @@
+<div class="page_content" *ngIf="isLogin">
+    <div class="login_form_wrap">
+        <form #loginForm="ngForm" name="form" (ngSubmit)="loginForm.form.valid && processLogin(loginForm)" novalidate>
+            <div class="logo_wrap">
+                <img src="assets/images/ez-logo.png" alt="logo">
+            </div>
+            <div class="form_wrap">
+                <div class="form_title">
+                    <h4>Login</h4>
+                </div>
+                <div class="email">
+                    <label>User Name</label>
+                    <input id="userEmail" name="userEmail" [(ngModel)]="userEmail" #email="ngModel"
+                        placeholder="User Name"
+                        [ngClass]="{ 'error': (email.touched && email.errors) || (loginForm.submitted && email.invalid)}">
+                </div>
+                <div class="password">
+                    <label>Password</label>
+                    <input id="mysecretpassword" name="userPassword" type="password" [(ngModel)]="userPassword"
+                        #password="ngModel" class="form-control" placeholder="Password"
+                        [ngClass]="{ 'error': (password.touched && password.errors) || (loginForm.submitted && password.invalid)}"
+                        matInput showHideInput>
+                    <div (click)="showPassToggle()" showHideTrigger="mysecretpassword" class="btn-toggle-pass"
+                        [showHideStatus]="{ id: 'mysecretpassword' }">
+                        <i *ngIf="!toggleViewPassword" class="fa fa-eye-slash"></i>
+                        <i *ngIf="toggleViewPassword" class="fa fa-eye"></i>
+                    </div>
+                </div>
+                <div class="action_btn">
+                    <button type="submit" *ngIf="!loginInProgress">Login</button>
+                    <button mdbBtn color="primary" type="button" disabled *ngIf="loginInProgress">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

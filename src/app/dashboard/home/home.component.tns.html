@@ -1,0 +1,259 @@
+<StackLayout>
+  <Label text="HomeComponent works" textWrap="true"></Label>
+  <Label text="This is a migrated component" textWrap="true"></Label>
+  <Label text="Update it to provide the UI elements required in your mobile app" textWrap="true"></Label>
+</StackLayout>
+
+<!--
+Original Web template:
+
+<!-- card-panel styles ->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            {{errorMsg}}
+        </button>
+    </div>
+    <div class="container">
+        <div class="page_content_dash">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" (ngSubmit)="getSearchData(searchFilter)">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label>Select Program</label>
+                                    <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                        {{selectedProgram}}
+                                    </div>
+                                    <div *ngIf="isProgramEmpty" class="text-danger">Please Select Program.</div>
+                                    <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                        <ul>
+                                            <li *ngFor="let program of programData">
+                                                <div class="checkbox_wrap">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" id="{{program.brandId}}"
+                                                            (change)="getselectedProgram(program)"
+                                                            [checked]="program.isSelect">
+                                                        <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="text-center see_all" (click)="seeAllPrograms()">
+                                            <p>See All Program</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col">
+                                    <label>Bill Type</label>
+                                    <select name="billtype" [(ngModel)]="selectedBillType"
+                                        (ngModelChange)="isRequired = false">
+                                        <option *ngFor="let bill of billType;">{{bill.label}}</option>
+                                    </select>
+                                    <div *ngIf="isRequired" class="text-danger">Please Select Bill Type.</div>
+                                </div>
+                                <div class="form-group col date">
+                                    <label>Date</label>
+                                    <input type="text" id="daterange" value="{{editDate}}" />
+                                    <img src="/assets/images/calendar.svg">
+                                </div>
+                            </div>
+                            <div class="slide_toggle_extra" *ngIf="isClickedAdvance">
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label>Store Wise</label>
+                                        <input type="text" name="store" [(ngModel)]="storewise">
+                                    </div>
+                                    <div class="form-group col">
+                                        <label>Mobile Number</label>
+                                        <input type="number" name="phone" [(ngModel)]="mobile">
+                                    </div>
+                                    <div class="form-group col">
+                                        <label>Bill ID.</label>
+                                        <input type="text" name="bill" [(ngModel)]="bill_id">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 search_btn_wrap">
+                            <div class="form-group col mt-4 action_btn">
+                                <button type="submit">
+                                    <span *ngIf="searchInProgress && !isRequired && errorMsg == 'Success'"
+                                        class="text-light spinner-border spinner-border-sm" role="status"
+                                        aria-hidden="true"></span>
+                                    Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="toggle_hide_show">
+                    <span *ngIf="isClickedAdvance" (click)="isClickedAdvance=!isClickedAdvance">-Hide Additional
+                        Features</span>
+                    <span *ngIf="!isClickedAdvance" (click)="isClickedAdvance=!isClickedAdvance">+Show Additional
+                        Features</span>
+                </div>
+            </div>
+            <!-- after search ->
+            <div class="row edit_field" *ngIf="isClickedSearch">
+                <div class="col">
+                    <label>Select Programs</label>
+                    <p>{{selectedProgram}} <span></span></p>
+                </div>
+                <div class="col">
+                    <label>Bill Type</label>
+                    <p>{{selectedBillType}}</p>
+                </div>
+                <div class="col">
+                    <label>Date</label>
+                    <p>{{startDate}} - {{endDate}}</p>
+                </div>
+                <div class="col text-right">
+                    <div class="edit_field_btn" (click)="editProgram();">
+                        <img src="/assets/images/pencil.svg">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page_content_edit" *ngIf="isClickedSearch">
+            <div class="row search_result">
+                <div class="col-3">
+                    <div class="search_count total" [ngClass]="{active: clickTotalCountMenu == 'total'}"
+                        (click)="clickActive('total');">
+                        <div class="label">Total</div>
+                        <div class="count">{{totalCount}}</div>
+                    </div>
+                    <div class="search_count success" [ngClass]="{active: clickTotalCountMenu == 'success'}"
+                        (click)="clickActive('success');">
+                        <div class="label">Success</div>
+                        <div class="count">{{successCount}}</div>
+                    </div>
+                    <div class="search_count error" [ngClass]="{active: clickTotalCountMenu == 'error'}"
+                        (click)="clickActive('error');">
+                        <div class="label">Error</div>
+                        <div class="count">{{errorCount}}</div>
+                    </div>
+                    <div class="search_count maped" [ngClass]="{active: clickTotalCountMenu == 'maped'}"
+                        (click)="clickActive('maped');">
+                        <div class="label">Matched</div>
+                        <div class="count">{{matchedCount}}</div>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="content_tab" *ngIf="isTotal">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Brand</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Success</th>
+                                    <th>Error</th>
+                                    <th>Matched</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let countStatus of arrCountStatus;let i = index"
+                                    [ngClass]="{active: i == activeRow}">
+                                    <td>{{countStatus.brandName}}</td>
+                                    <td>{{countStatus.executionDate}}</td>
+                                    <td>{{countStatus.totalCount}}</td>
+                                    <td>
+                                        <div class="success" *ngIf="countStatus.successCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'success' && i == activeRow}"
+                                            (click)="successProgram(i, countStatus, 'success');clickSubProgram = 'success'">
+                                            {{countStatus.successCount}}
+                                        </div>
+                                        <div class="success disable" *ngIf="countStatus.successCount == 0">
+                                            {{countStatus.successCount}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="error" *ngIf="countStatus.errorCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'error' && i == activeRow}"
+                                            (click)="errorProgram(i, countStatus, 'error');clickSubProgram = 'error'">
+                                            {{countStatus.errorCount}}
+                                        </div>
+                                        <div class="error disable" *ngIf="countStatus.errorCount == 0">
+                                            {{countStatus.errorCount}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mapped" *ngIf="countStatus.matchedCount != 0"
+                                            [ngClass]="{active: clickSubProgram == 'matched' && i == activeRow}"
+                                            (click)="matchedProgram(i, countStatus, 'matched');clickSubProgram = 'matched'">
+                                            {{countStatus.matchedCount}}
+                                        </div>
+
+                                        <div class="mapped disable" *ngIf="countStatus.matchedCount == 0">
+                                            {{countStatus.matchedCount}}
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="content_tab" *ngIf="!isTotal">
+                        <table class="table table-borderless error">
+                            <thead>
+                                <tr>
+                                    <th>Error</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let errCount of arrErrorCount;let i = index">
+                                    <td>
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="{{i}}"
+                                                    (change)="getErrStatusCode(errCount, i)">
+                                                <label for="{{i}}">{{errCount.remarks}}</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="code">{{errCount.count}}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="isClickedRow" class="table_container">
+                <div class="row program_table_header">
+                    <div class="program_title col">
+                        <p>{{activeProgramName}}</p>
+                    </div>
+                    <!-- <div class="program_tab_btn col">
+                        <ul>
+                            <li [ngClass]="{active: clickSubProgram == 'success'}">
+                                <a href="javascript:;">Success</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">Error</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">Matched</a>
+                            </li>
+                        </ul>
+                    </div> ->
+                    <div class="btn-group download_file col">
+                        <a data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                            Download File
+                        </a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li><a href="javascript:;" (click)="exportTableCsv()">CSV</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <app-table [arrTable]="dataSource" [arrSelectedProgram]="arrTransactionData"></app-table>
+            </div>
+            <!-- after search end ->
+        </div>
+    </div>
+</section>
+-->

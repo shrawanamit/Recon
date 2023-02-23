@@ -1,0 +1,97 @@
+<StackLayout>
+  <Label text="ConfigurationComponent works" textWrap="true"></Label>
+  <Label text="This is a migrated component" textWrap="true"></Label>
+  <Label text="Update it to provide the UI elements required in your mobile app" textWrap="true"></Label>
+</StackLayout>
+
+<!--
+Original Web template:
+
+<div class="page_content">
+    <div class="container">
+        <div class="config_table" *ngIf="!isCreateConfig">
+            <div class="top_header">
+                <div class="search_filter">
+                    <img src="assets/images/search.svg">
+                    <input (keyup)="applyFilter($event.target.value)" placeholder="Search...">
+                </div>
+                <button (click)="createNewConfig()">
+                    <i class="fa fa-plus"></i>
+                    Create New
+                </button>
+            </div>
+            <div class="loading-container" *ngIf="!dataSource.data.length && !internalError">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p *ngIf="internalError">Something Error...!</p>
+            </div>
+            <!-- ANGULAR MATERIAL TABLE ->
+            <table mat-table [dataSource]="dataSource" class="table" matSort>
+                <!-- Bill No. # Column ->
+                <ng-container matColumnDef="brandName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Program Name</th>
+                    <td mat-cell *matCellDef="let product">{{product.brandName}}</td>
+                </ng-container>
+                <ng-container matColumnDef="headerFile">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Header File</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}" [checked]="product.fileType == 'sale'">
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="skuBill">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU Bill Item</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}"
+                                    [checked]="product.fileType == 'SaleItem'">
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="skuTenderItem">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU Tender Item</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}"
+                                    [checked]="product.fileType == 'SaleItem'">
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="lastModifiedBy">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated By</th>
+                    <td mat-cell *matCellDef="let product">{{product.lastModifiedBy}}</td>
+                </ng-container>
+                <ng-container matColumnDef="lastModifiedOn">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date Updated</th>
+                    <td mat-cell *matCellDef="let product">{{product.lastModifiedOn}}</td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                    <td mat-cell *matCellDef="let product">
+                        <mat-slide-toggle></mat-slide-toggle>
+                        <img src="/assets/images/pencil.svg" (click)="createNewConfig()">
+                        <img src="/assets/images/trash.svg">
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]">
+            </mat-paginator>
+        </div>
+
+        <app-create-config *ngIf="isCreateConfig"></app-create-config>
+    </div>
+</div>
+-->

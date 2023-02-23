@@ -1,0 +1,79 @@
+<div class="mt-4 digital-reciept" *ngIf="!openSearch">
+    <div class="container">
+        <div class="reconLoadingData" *ngIf="loadingData">
+            <button class="btn btn-dark">
+                <span class="text-light spinner-border spinner-border-sm"></span>
+                <span>Loading! Please wait ...</span>
+            </button>
+        </div>
+        <div class="card">
+            <div class='card-body'>
+                <div class="title d-flex justify-content-between">
+                    <div>
+                        <h3>Red_Alert Summary</h3>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-around">
+                    <div class="searhinput">
+                        <label>Store ID*</label>
+                        <input type="number" class="input-style" name="storeId" (change)="storeIdHandler($event)" />
+
+                    </div>
+                    <div class="search-inovice d-flex flex-column">
+                        <label>Date*</label>
+                        <input class="date_wrap" id="searhDate" type="date" (change)="billDatahandler($event)"
+                            [value]="todaysDate" />
+
+                    </div>
+                    <div class="searhinput">
+
+                        <button (click)="SearchModal()" class="btnsearch">SEARCH</button>
+                    </div>
+
+                </div>
+                <div class='mt-4 dr-table'>
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th>Sr No</th>
+                                <th>File ID</th>
+                                <th>Recoud Count</th>
+                                <th>Sucess Count</th>
+                                <th>% sucess Count</th>
+                                <th>sucess Thresshold</th>
+                                <th>red_Alert</th>
+                            </tr>
+                            <tr *ngFor="let datas of billData;let i = index">
+                                <th>{{i+1}}</th>
+
+                                <th>{{datas.fileid}}</th>
+                                <th>
+                                    <p class="totalbill_wrap" (click)="getInvoiceBySummary(datas)">{{datas.recordCount}}
+                                    </p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap" (click)="getInvoiceBySummaryFailed(datas)">{{datas.successCount}}
+                                    </p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap" (click)="getInvoiceBySummarySucess(datas)">
+                                        {{datas.percentageSuccessCount}}</p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap" (click)="getInvoiceBySummarySms(datas)">{{datas.successThresold}}</p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap" (click)="getInvoiceBySummaryWhatsapp(datas)">
+                                        {{datas.redAlert}}
+                                    </p>
+                                </th>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

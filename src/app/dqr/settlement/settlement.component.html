@@ -1,0 +1,200 @@
+<!-- card-panel styles -->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            Loading! Please wait ...
+        </button>
+    </div>
+    <div class="container">
+        <div class="page_content_dash">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" name="form"
+                    (ngSubmit)="searchFilter.form.valid && getSearchData(searchFilter);" novalidate>
+                    <div class="row">
+                        <div class="form-group col-3">
+                            <label>Select Program</label>
+                            <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                {{selectedProgram}}
+                                <input type="hidden" name="programData" [(ngModel)]="selectedProgram"
+                                    [value]="selectedProgram" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Program.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                <ul>
+                                    <li *ngFor="let program of programData">
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="{{program.brandId}}"
+                                                    (change)="getselectedProgram(program)" [checked]="program.isSelect">
+                                                <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="text-center see_all" (click)="seeAllPrograms()">
+                                    <p>See All Program</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group col-3">
+                            <label>Settelment Data</label>
+                            <select name="SettlementSatus" [(ngModel)]="SettlementSatus"
+                                (ngModelChange)="changeSettData(SettlementSatus)" required #settlementSatus="ngModel">
+                                <option [ngValue]="1">All Settled</option>
+                                <option [ngValue]="2">All Not Settled</option>
+                                <option [ngValue]="3">By Month</option>
+                            </select>
+                            <div
+                                *ngIf="searchFilter.submitted || settlementSatus.invalid && (settlementSatus.dirty || settlementSatus.touched)">
+                                <div class="alert alert-danger" *ngIf="settlementSatus.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Settelment Data.
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="form-group col-2" *ngIf="isMonthSelect">
+                            <label>Select From Month</label>
+                            <input [(ngModel)]="FromDate" autocomplete="off" name="FromDate" bsDatepicker
+                                [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)"
+                                required #fromDate="ngModel">
+                            <img src="assets/images/calendar.svg" (onShown)="onOpenCalendar($event)">
+                            <div
+                                *ngIf="searchFilter.submitted || fromDate.invalid && (fromDate.dirty || fromDate.touched)">
+                                <div class="alert alert-danger" *ngIf="fromDate.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Month From.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-2" *ngIf="isMonthSelect">
+                            <label>Select To Month</label>
+                            <input [(ngModel)]="Todate" autocomplete="off" name="Todate" bsDatepicker
+                                [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)"
+                                required #todate="ngModel">
+                            <img src="assets/images/calendar.svg" (onShown)="onOpenCalendar($event)">
+                            <div
+                                *ngIf="searchFilter.submitted || todate.invalid && (todate.dirty || todate.touched)">
+                                <div class="alert alert-danger" *ngIf="todate.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Month To.
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="form-group col-2 action_btn">
+                            <button type="submit">
+                                <span *ngIf="searchInProgress && isLoading"
+                                    class="text-light spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
+                                Search</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+
+
+        <div class="row" *ngIf="searchInProgress" class="dqr_table_wrap">
+            <div class="loading-container">
+                <!-- <div class="spinner-border" role="status" *ngIf="isLoading">
+                    <span class="sr-only">Loading...</span>
+                </div> -->
+                <p class="text-danger" *ngIf="!isLoading">{{responceMsg}}</p>
+            </div>
+            <div class="heading_wrap" *ngIf="DqrData.length > 0">
+                <div class="table_heading">
+                    DQR Summary
+                </div>
+                <div class="download_img">
+                    <small class="icon-info-tooltip" data-tip="Download DQR Summary" tabindex="2">
+                        <span class="img_download">
+                            <img src="/assets/images/downloadTable.svg" (click)="downloadBillSummary()">
+                        </span>
+                    </small>
+                </div>
+            </div>
+
+            <div class=' dr-table' *ngIf="DqrData.length > 0">
+                <table>
+                    <tbody>
+                        <tr class="table-header">
+                            <th>S.No</th>
+                            <th>#Store&nbsp;Code</th>
+                            <th>#Store&nbsp;Name</th>
+                            <th>#Lpaas&nbsp;Sales</th>
+                            <th>#Lpaas&nbsp;Bills</th>
+                            <th>#Loyality&nbsp;Sales</th>
+                            <th>#Non&nbsp;Loyality&nbsp;Sales</th>
+                            <th>#Loyalty&nbsp;Bills</th>
+                            <th>#Non&nbsp;Loyalty&nbsp;Bills</th>
+                            <th>#Extra&nbsp;Bills</th>
+
+                        </tr>
+                        <tr *ngFor="let datas of DqrData;let i = index">
+                            <th>{{i+1}}</th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.storeCode}}
+                                <!-- </p> -->
+                            </th>
+                            
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.storeName}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.lpaasSales}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.lpaasBills}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.reconLoyalitysales}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.reconNonLoyalitysales}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.reconLoyaltyBills}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.reconNonLoyaltyBills}}
+                                <!-- </p> -->
+                            </th>
+                            <th>
+                                <!-- <p class="totalbill_wrap"> -->
+                                    {{datas.extraBillsinLpaas}}
+                                <!-- </p> -->
+                            </th>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+</section>

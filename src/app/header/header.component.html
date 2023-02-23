@@ -1,0 +1,76 @@
+<div class="page_content">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a routerLink="/" class="navbar-brand">
+            <img src="assets/images/recon_logo.png" alt="logo">
+            <span
+                style="font-size: 10px; font-style: italic; color: #3ab894; font-weight: 800;">{{currentVersion}}</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" [routerLinkActive]="'active'" *ngFor="let menu of mainMenu; let i = index">
+                   
+                   
+                    <span *ngIf="menu.name == 'Reports'" class="nav-item">
+                        <a class="nav-link dropdown-toggle"  (click)="seeAllPrograms() ">
+                            Reports
+                        </a>
+                        <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div> -->
+                        <div class="dropdown_multiselect" *ngIf="isAllProgram">
+                            <ul>
+                                <li *ngFor="let program of programData;let i = index">
+                                    <div class="checkbox_wrap">
+                                        <div class="form-group">
+                                            <input type="radio" id="{{program.name}}"
+                                            (click)="getselectedProgram()"
+                                                [checked]="program.select" name="reports">
+                                            <label for="{{program.name}}"  routerLink="{{program.slug}}">{{program.name}}</label>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                           
+                        </div>
+                    </span>
+                    <a *ngIf="menu.name != 'Reports'" class="nav-link" mdbWavesEffect
+                        routerLink="{{menu.slug}}"  (click)="hidePopup()" >{{menu.name}}</a>
+                </li>
+
+            </ul>
+            <!-- <ul class="navbar-nav ml-auto nav-flex-icons nav_right_panel" *ngIf="!isLogin">
+                <li>
+                    <button class="btnsearch"(click)="signUp()">SIGNUP</button>
+                </li>
+
+            </ul> -->
+            <ul class="navbar-nav ml-auto nav-flex-icons nav_right_panel" *ngIf="isLogin">
+                <li class="nav-item avatar dropdown" dropdown>
+                    <a dropdownToggle mdbWavesEffect type="button" class="nav-link waves-light" mdbWavesEffect>
+                        <img src="assets/images/user.svg">
+                    </a>
+                    <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown dropdown-primary" role="menu">
+                        <div class="profile_icon">
+                            <div class="icon">
+                                <img src="assets/images/user_icon.png">
+                            </div>
+                            <p>Welcome {{userDetails.userName}}</p>
+                        </div>
+                        <a class="dropdown-item waves-light" mdbWavesEffect (click)="logout()">
+                            <i class="fa fa-sign-out"></i>
+                            Log out
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

@@ -1,0 +1,239 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+
+.mat-paginator {
+    display: block;
+    width: 100%;
+}
+.pannel-section {
+    .reconLoadingData {
+        @include loader;
+    }
+    .container {
+        .page_content_dash {
+            background: $color-white;
+            margin: 20px auto;
+            padding: 10px;
+            border-radius: 5px;
+            .filter_input_wrap {
+                .row {
+                    .form-group {
+                        position: relative;
+                        margin-bottom: 25px;
+                        .text-danger {
+                            @include paragraph;
+                        }
+                        label {
+                            @include label;
+                        }
+                        select,
+                        .selected_text {
+                            @include selectBox;
+                            text-transform: capitalize;
+                        }
+                        input {
+                            @include input;
+                            margin: 0;
+                            // width: 0%;
+                        }
+                        img {
+                            position: absolute;
+                            right: 25px;
+                            top: 37px;
+                            // z-index: 99;
+                        }
+                        .selected_text {
+                            height: 41px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 281.11px;
+                            padding-right: 25px;
+                            cursor: pointer;
+                        }
+                        .dropdown_multiselect {
+                           
+                            ul {
+                                @include img-box-shadow;
+                                margin: 0;
+                                padding: 0;
+                                list-style: none;
+                                background: $color-white;
+                                position: absolute;
+                                width: 82%;
+                                top: 70px;
+                                z-index: 99;
+                                height: 200px;
+                                overflow-y: auto;
+                                li {
+                                    padding: 10px;
+                                    .checkbox_wrap {
+                                        @include radio;
+                                        // width: fit-content;
+                                        label {
+                                            width: 100%;
+                                            padding-left: 0 !important;
+                                            &:before {
+                                                left: 93% !important;
+                                                border: none !important;
+                                            }
+                                            &:after {
+                                                left: 90% !important;
+                                                background: none !important;
+                                                border: none !important;
+                                            }
+                                            text-transform: capitalize;
+                                        }
+                                        .form-group {
+                                            margin-bottom: 0;
+                                            input[type="radio"] {
+                                                &:checked + label {
+                                                    color: $theme-color;
+                                                    &:after {
+                                                        content: "";
+                                                        display: block;
+                                                        position: absolute;
+                                                        top: 3px !important;
+                                                        right: 13px !important;
+                                                        width: 7px !important;
+                                                        height: 14px !important;
+                                                        border: solid $theme-color !important;
+                                                        border-width: 0 2px 2px 0 !important;
+                                                        transform: rotate(45deg) !important;
+                                                        border-radius: 0% !important;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    &:hover {
+                                        background-color: rgba($theme-color, 0.06);
+                                    }
+                                }
+                            }
+                            .see_all {
+                                position: absolute;
+                                top: 239px;
+                                z-index: 99;
+                                width: 82%;
+                                left: 15px;
+                                padding: 10px;
+                                background: $color-white;
+                                cursor: pointer;
+                                color: $theme-color;
+                                p {
+                                    margin: 0 auto;
+                                }
+                            }
+                        }
+                    }
+                    .action_btn {
+                        display: inline-flex;
+                        align-items: flex-start;
+                        margin: 0;
+                        margin-top: 26px;
+                        button {
+                            @include button;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
+        .dqr_table_wrap {
+            position: relative;
+            .loading-container {
+                position: absolute;
+                left: 50%;
+                top: 20%;
+                z-index: 99;
+            }
+        }
+    }
+    .digital-reciept {
+        .container {
+          .card {
+            border: 1px solid #ffffff;
+            .title {
+              color: #6a6a6a;
+              .table_heading_wrap{
+                display: flex;
+                h3 {
+                  font-size: 22px;
+                  font-weight: 500;
+                  
+                }
+                .img_refresh{
+                  padding-left: 6px;
+                  // padding-top: 6px;
+                }
+              
+                .icon-info-tooltip {
+                  @include default-tool-tip;
+                }
+              }
+             
+              input {
+                background: #f9f9f9;
+                border: 1px solid #f9f9f9;
+                outline: none;
+                color: #959795;
+              }
+            }
+      
+            .dr-table {
+              max-height: 400px;
+              overflow-y: auto;
+              table {
+                width: 100%;
+                text-align: left;
+              }
+              .table-header {
+                th {
+                  background-color: $theme-color;
+                  line-height: 25px;
+                  color: #ffffff;
+                  font-size: 14px;
+                  font-weight: 400;
+                  vertical-align: middle;
+                  padding: 10px;
+                  border: none;
+                  position: sticky;
+                  top: 0;
+                }
+              }
+              tr {
+                background-color: white;
+                line-height: 30px;
+      
+                color: #959795;
+                font-size: 13px;
+                font-weight: 300;
+                th {
+                  min-width: 100px;
+                  background-color: $color-white;
+                  padding: 10px;
+                  text-transform: capitalize !important;
+                  border-bottom: 1px solid #eeecec !important;
+                  color: #4a4a4a;
+                  font-size: 14px;
+                  font-weight: 400;
+                  line-height: 26px;
+                  font-family: "Roboto", sans-serif;
+                  text-align: left;
+                  margin: 0 auto;
+                  vertical-align: middle;
+                }
+              }
+              .button-style {
+                background: none;
+                border: none;
+                outline: none;
+                color: #959795;
+                font-size: 18px;
+              }
+            }
+          }
+        }
+      }
+}

@@ -1,0 +1,2595 @@
+<div class="page_content">
+    <!-- <div class="loading-container" *ngIf="loadingData">
+        <div class="spinner-border" role="status" >
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div> -->
+    <div class="container">
+        <div class="config_table" *ngIf="!isCreateConfig && !openValidateSec">
+            <div class="top_header">
+                <div class="search_filter">
+                    <img src="assets/images/search.svg">
+                    <input (keyup)="applyFilter($event.target.value)" placeholder="Search...">
+                </div>
+                <div class="btn_wrap">
+                    <button class="btn_validate" (click)="openValidateSection()">
+                        Validate File
+                    </button>
+                    <button (click)="createNewConfig('false', [])">
+                        <i class="fa fa-plus"></i>
+                        Create New
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading-container" *ngIf="!dataSource.data.length ">
+                <div class="spinner-border" role="status" *ngIf="!internalError">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="text-danger" *ngIf="internalError">{{responceMsg}}</p>
+            </div>
+            <!-- ANGULAR MATERIAL TABLE -->
+            <table mat-table [dataSource]="dataSource" class="table" matSort>
+                <!-- Bill No. # Column -->
+                <ng-container matColumnDef="brandName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Program Name</th>
+                    <td mat-cell *matCellDef="let product">{{product.brandName}}</td>
+                </ng-container>
+                <ng-container matColumnDef="headerFile">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Header File</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}" [checked]="product.isHeaderFile"
+                                    disabled>
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="skuBill">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU Bill Item</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}" [checked]="product.isItemFile">
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="skuTenderItem">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU Item & Tender File</th>
+                    <td mat-cell *matCellDef="let product">
+                        <div class="checkbox_wrap">
+                            <div class="form-group">
+                                <input type="checkbox" id="{{product.brandId}}" [checked]="product.isItemTenderFile">
+                                <label for="{{product.brandId}}"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="lastModifiedBy">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated By</th>
+                    <td mat-cell *matCellDef="let product">{{product.modifiedBy}}</td>
+                </ng-container>
+                <ng-container matColumnDef="lastModifiedOn">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date Updated</th>
+                    <td mat-cell *matCellDef="let product">{{product.modifiedDate}}</td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+                    <td mat-cell *matCellDef="let product">
+                        <small class="icon-info-tooltip" data-tip="Disable Program" tabindex="2"
+                            *ngIf="moduleRoleRightDetailWithKey.CONFIGURATION.delete == 'yes'">
+                            <img src="/assets/images/trash.svg">
+                        </small>
+                        <small class="icon-info-tooltip" data-tip="Edit Program" tabindex="2"
+                            *ngIf="moduleRoleRightDetailWithKey.CONFIGURATION.edit == 'yes'">
+                            <img src="/assets/images/pencil.svg" (click)="createNewConfig('true',product)">
+                        </small>
+                        <small class="icon-info-tooltip" data-tip="Active/Inactive Program" tabindex="2"
+                            *ngIf="moduleRoleRightDetailWithKey.CONFIGURATION.create == 'yes'">
+                            <mat-slide-toggle [(ngModel)]="product.isActive"
+                                (change)="activeProgram(product.brandId,product.isActive,product.isEnable,product.isDeleted)"
+                                aria-disabled="moduleRoleRightDetailWithKey.CONFIGURATION.create == 'yes'">
+                            </mat-slide-toggle>
+                        </small>
+                        <small class="icon-info-tooltip" data-tip="View data" tabindex="2" data-toggle="modal"
+                            data-target=".bd-example-modal-lg"
+                            *ngIf="moduleRoleRightDetailWithKey.CONFIGURATION.view == 'yes'">
+                            <img src="/assets/images/view.svg" (click)="viewAllData(product.brandId,product)">
+                        </small>
+
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]">
+            </mat-paginator>
+
+
+
+
+
+
+        </div>
+        <!-- <app-create-config *ngIf="isCreateConfig" [isEditConfig]='isEditConfig'></app-create-config> -->
+
+
+        <div class="mt-4 file_container" *ngIf="openValidateSec">
+            <div class="backbtn_wrap">
+                <button type="button" class="close" (click)="backButton()">&times;</button>
+            </div>
+            <div class="row mt-4 file_container_wrap">
+                <div class="col-6 file_container_form">
+                    <div class="row  mb-4">
+
+                        <div class="col-6 py-2">
+                           Recon Type
+                        </div>
+                        <div class="form-group col-6">
+                            <select name="FileType" id="FileTypeSelect" [(ngModel)]="FileType"
+                                (ngModelChange)="selectFileType(FileType)" required #fileType="ngModel">
+                                <option [ngValue]="1">Standard</option>
+                                <option [ngValue]="2">Gsl</option>
+                                <option [ngValue]="3">Ecomm</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+
+                        <div class="col-6  py-2">
+                           Sale Item
+                        </div>
+                        <div class="form-group col-6">
+                            <input type="file" class="form-control-file" name="file"id="file1"
+                                (change)="handleFile1Input($event.target.files)">
+
+                        </div>
+
+
+                    </div>
+                    <div class="row mb-4">
+
+                        <div class="col-6  py-2">
+                            Tender
+                        </div>
+                        <div class="form-group col-6">
+                            <input type="file" class="form-control-file" name="file" id="file2"
+                                (change)="handleFile2Input($event.target.files)">
+
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <button class="ml-2" (click)="validateFile()">
+                            <span *ngIf="loadingData" class="text-ligt spinner-border spinner-border-sm " role="status"
+                                aria-hidden="true"></span>
+                            Validate
+                        </button>
+                    </div>
+
+                </div>
+                <div class="col-5 output_text_wrap" *ngIf="displayFileRes">
+                    <span>{{fileUploadResponce}}</span>
+                    <!-- <span class="responceError" *ngFor="let fileUploadResponceError of fileUploadResponceError;let i = index">{{fileUploadResponceError}}
+                        <br/>
+                    </span> -->
+                </div>
+                <div class="col-5 output_text_wrap"  *ngIf="displayFileError">
+                    <span class="responceError" *ngFor="let fileUploadResponceError of fileUploadResponceError;let i = index">{{fileUploadResponceError}}
+                        <br/>
+                    </span>
+                </div>
+            </div>
+
+
+            
+            <div class="mt-4 table_container_wrap" *ngIf="displayDileData">
+                <div class='dr-table'>
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+
+
+                                <th>#Bill Price</th>
+                                <th>#Tender Amount</th>
+                                <th>#Net Amount</th>
+                                <th>#Bill Date</th>
+                                <th>#Bill Value</th>
+                                <th>#Massge</th>
+                                <th>#Bill No</th>
+                                <th>#Store Code</th>
+
+
+                            </tr>
+                            <tr *ngFor="let reconFileDataList of reconDataList;let i = index">
+                                <th>{{reconFileDataList.billedPrices}}</th>
+                                <th>{{reconFileDataList.tenderAmount}}</th>
+                                <th>{{reconFileDataList.netamount}}</th>
+                                <th>{{reconFileDataList.billdate}}</th>
+                                <th>{{reconFileDataList.billValue}}</th>
+                                <th>{{reconFileDataList.massges}}</th>
+                                <th>{{reconFileDataList.billNo}}</th>
+                                <th>{{reconFileDataList.storeCode}}</th>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Create or Edit Program -->
+
+<div class="createnew_wrap" *ngIf="isCreateConfig">
+    <div class="create_new_container">
+        <div class="loading-container" *ngIf="isEditConfigLoader && reconGeneralDetail.length == ''">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div class="top_header">
+            <ul>
+                <li [ngClass]="{active: tabId == '1'}" (click)="tabId='1'">General</li>
+                <li [ngClass]="{active: tabId == '2'}" (click)="newBrandId != '' && tabId='2'">File</li>
+                <li [ngClass]="{active: tabId == '3'}" (click)="newBrandId != '' && tabId='3'">Folder</li>
+                <li [ngClass]="{active: tabId == '4'}" (click)="newBrandId != '' && tabId='4'">DQR</li>
+                <li [ngClass]="{active: tabId == '5'}" (click)="newBrandId != '' && tabId='5'">Alert</li>
+                <li [ngClass]="{active: tabId == '6'}" (click)="newBrandId != '' && tabId='6'">Report</li>
+                <li [ngClass]="{active: tabId == '7'}" (click)="newBrandId != '' && tabId='7'">Setting</li>
+                <li [ngClass]="{active: tabId == '8'}" (click)="newBrandId != '' && tabId='8' "
+                    (click)="getDetailById()">All Data</li>
+                <!-- <li [ngClass]="{active: tabId == '8'}" (click)="getDetailById() && tabId='8' ">All Data</li> -->
+            </ul>
+        </div>
+        <div class="close_config_form">
+            <button (click)="closeConfig()" class="close">Close</button>
+        </div>
+        <form #configObject="ngForm" name="form" (ngSubmit)="configObject.form.valid && getConfigObject(configObject)"
+            novalidate>
+            <div class="form_section">
+                <div class="genral_wrap" *ngIf="tabId == '1'">
+                    <div class="form_wrap row">
+                        <div class="input_group col-4">
+                            <label>Program Name*</label>
+                            <input type="text" pattern='[A-Za-z\\s]*' [(ngModel)]="reconGeneralDetail.brandName"
+                                name="brandName" minlength="4" required #brandName="ngModel" maxlength="50">
+                            <div
+                                *ngIf="configObject.submitted || brandName.invalid && (brandName.dirty || brandName.touched)">
+                                <div class="alert alert-danger" *ngIf="brandName.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="brandName.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Name must be at least 4 characters long.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="programCode.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Name pattern does't matched.
+                                </div>
+                            </div>
+                            <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                        </div>
+                        <div class="input_group col-4">
+                            <label>Program Code*</label>
+                            <input type="text" [(ngModel)]="reconGeneralDetail.programCode" name="programCode"
+                                pattern="[A-Za-z\\s]*" minlength="4" required #programCode="ngModel" maxlength="50">
+                            <div
+                                *ngIf="configObject.submitted || programCode.invalid && (programCode.dirty || programCode.touched)">
+                                <div class="alert alert-danger" *ngIf="programCode.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Code must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="programCode.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Code must be at least 4 characters long.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="programCode.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    Program Code pattern does't matched.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap">
+                        <p>File required for Recon Process*</p>
+                        <div class="group">
+                            <div class="radio_wrap">
+                                <div class="form-group">
+                                    <input type="radio" id="fileType1" name="fileType" value="sale"
+                                        [(ngModel)]="reconGeneralDetail.fileType" #fileType="ngModel" required>
+                                    <label for="fileType1">Header Recon File</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="fileType2" name="fileType" value="item"
+                                        [(ngModel)]="reconGeneralDetail.fileType" required>
+                                    <label for="fileType2">SKU Bill Item file</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="fileType3" name="fileType" value="SaleItem"
+                                        [(ngModel)]="reconGeneralDetail.fileType" required>
+                                    <label for="fileType3">SKU Bill Item & SKU Bill tender file</label>
+                                </div>
+                                <div *ngIf="configObject.submitted && fileType.invalid">
+                                    <div class="alert alert-danger" *ngIf="fileType.errors?.required">
+                                        <i class="fa fa-info-circle"></i>
+                                        File type must be required.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="form_wrap">
+                        <p>Missing Transactions</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="fileType1">
+                                    <label for="fileType1">Header Level</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="fileType2">
+                                    <label for="fileType2">Item Level</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="form_wrap">
+                        <p>Missing Redemptions</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="mr1" [(ngModel)]="missingRedemptionByAll"
+                                        (change)="missingRedemptionByAll === isPointOnMissingRedemption"
+                                        name="missingRedemptionByAll" [checked]="isPointOnMissingRedemption 
+                                        && reconGeneralDetail.isCouponOnMissingRedemption 
+                                        && reconGeneralDetail.isGV">
+                                    <label for="mr1">All</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="mr2" [(ngModel)]="isPointOnMissingRedemption"
+                                        name="isPointOnMissingRedemption"
+                                        [checked]="missingRedemptionByAll || isPointOnMissingRedemption" disabled>
+                                    <label for="mr2">Points</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="mr3"
+                                        [(ngModel)]="reconGeneralDetail.isCouponOnMissingRedemption"
+                                        name="isCouponOnMissingRedemption" [checked]="missingRedemptionByAll">
+                                    <label for="mr3">Coupon</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="mr4" [(ngModel)]="reconGeneralDetail.isGV" name="isGV"
+                                        [checked]="missingRedemptionByAll">
+                                    <label for="mr4">GV</label>
+                                </div>
+                                <!-- <div class="form-group">
+                                    <input type="checkbox" id="mr5"
+                                        [(ngModel)]="reconGeneralDetail.isPaidByCreditNoteAdjusted"
+                                        name="isPaidByCreditNoteAdjusted">
+                                    <label for="mr5">Paid By Credit Note</label>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap">
+                        <div class="group_2">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="uploadSKUToLpass1"
+                                        [(ngModel)]="reconGeneralDetail.uploadSkuToLpass" name="uploadSkuToLpass">
+                                    <label for="uploadSKUToLpass1">Upload SKU data to LPaaS</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="uploadSKUToRP1"
+                                        [(ngModel)]="reconGeneralDetail.uploadSkuToRP" name="uploadSkuToRP">
+                                    <label for="uploadSKUToRP1">Upload SKU data to Reporting Panel</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap">
+                        <p>API will be invoked for Bill Reconciliation</p>
+                        <div class="group">
+                            <div class="radio_wrap">
+                                <div class="form-group">
+                                    <input type="radio" id="accrualEossApi1"
+                                        [checked]="reconGeneralDetail.fileType == 'sale'" disabled>
+                                    <label for="accrualEossApi1" class="disable">Accrual EOSS API</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="saveSkuBillApi2"
+                                        [checked]="reconGeneralDetail.fileType == 'item' || reconGeneralDetail.fileType == 'SaleItem'"
+                                        disabled>
+                                    <label for="saveSkuBillApi2" class="disable">Save SKU Bill API</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap">
+                        <p>Store based Accrual</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="storeBasedAccrual1"
+                                        [(ngModel)]="reconGeneralDetail.isAccrual" name="isAccrual">
+                                    <label for="storeBasedAccrual1">Store based Accrual</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="form_wrap">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-info-circle"></i>
+                            <b>Note:</b> Recon will be done without Tender
+                        </div>
+                    </div>
+                    <div class="offer_code">
+                        <label>Offer Code</label>
+                        <input type="text" placeholder="Enter Offer Code">
+                    </div> -->
+                </div>
+                <div class="file_wrap" *ngIf="tabId == '2'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <!-- <div class="form_wrap">
+                        <p>Recon file settings</p>
+                        <div class="group">
+                            <div class="radio_wrap">
+                                <div class="form-group">
+                                    <input type="radio" id="test1" name="radio-group" checked>
+                                    <label for="test1">SKU Bill Item & SKU Bill tender file</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="test2" name="radio-group">
+                                    <label for="test2">SKU Bill item file </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="file_format_wrap">
+                        <div class="form_wrap">
+                            <p>File Format</p>
+                            <div class="group">
+                                <div class="radio_wrap">
+                                    <div class="form-group">
+                                        <input type="radio" id="fileFormat1" value="csv"
+                                            [(ngModel)]="fileConfigDetail.fileExtension" name="fileExtension" checked>
+                                        <label for="fileFormat1">CSV</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="radio" id="fileFormat2" value="text"
+                                            [(ngModel)]="fileConfigDetail.fileExtension" name="fileExtension">
+                                        <label for="fileFormat2">Text</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input_group">
+                                <label>Time(24 hr format)</label>
+                                <input type="text" [(ngModel)]="fileConfigDetail.fileTime" name="fileTime">
+                                <img src="assets/images/clock.svg">
+                            </div>
+                            <div class="input_group">
+                                <label>Delimiter</label>
+                                <select [(ngModel)]="fileConfigDetail.columnSeparator" name="columnSeparator"
+                                    class="bg-white">
+                                    <option>~|</option>
+                                    <option>|</option>
+                                    <option>||</option>
+                                    <option>~</option>
+                                </select>
+                            </div>
+                            <div class="input_group">
+                                <label>Line Seprator</label>
+                                <select [(ngModel)]="fileConfigDetail.lineSeparator" name="lineSeparator"
+                                    class="bg-white">
+                                    <option>#\r\n</option>
+                                    <option>\r\n</option>
+                                    <option>\n</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sample_tbl_container" *ngIf="tabId == '2'">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>File Type</th>
+                                    <th>Sample File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SKU bill tender file</td>
+                                    <td class="text-center">
+                                        <a target="_self" href="../../assets/downloads/ER_BrandName_Tender_20200225.csv"
+                                            download="ER_BrandName_Tender_20200225.csv">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SKU Bill item file</td>
+                                    <td class="text-center">
+                                        <a target="_self"
+                                            href="../../assets/downloads/ER_BrandName_Sale_Item_20200225.csv"
+                                            download="ER_BrandName_Sale_Item_20200225.csv">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Header File</td>
+                                    <td class="text-center">
+                                        <a target="_self" href="../../assets/downloads/ER_BrandName_Sale_25022020.csv"
+                                            download="ER_BrandName_Sale_25022020.csv">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="folder_wrap" *ngIf="tabId == '3'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <div class="form_wrap">
+                        <div class="input_group">
+                            <label>Recon Folder Path*</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconFileFolder" name="reconFileFolder"
+                                #folder="ngModel" required placeholder="/Recon/Folder">
+                            <div *ngIf="configObject.submitted && folder.invalid">
+                                <div class="alert alert-danger" *ngIf="folder.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Success Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconSuccessFileFolder"
+                                name="reconSuccessFileFolder" #success="ngModel" required placeholder="/Recon/Success">
+                            <div *ngIf="configObject.submitted && success.invalid">
+                                <div class="alert alert-danger" *ngIf="success.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Success Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Failure Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconFailureFileFolder"
+                                name="reconFailureFileFolder" #failure="ngModel" required placeholder="/Recon/Failure">
+                            <div *ngIf="configObject.submitted && failure.invalid">
+                                <div class="alert alert-danger" *ngIf="failure.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Failure Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Archive Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconArchieveFileFolder"
+                                name="reconArchieveFileFolder" #archive="ngModel" required placeholder="/Recon/Archive">
+                            <div *ngIf="configObject.submitted && archive.invalid">
+                                <div class="alert alert-danger" *ngIf="archive.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Archive Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Reposting Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconRepostingFileFolder"
+                                name="reconRepostingFileFolder" #reposting="ngModel" required
+                                placeholder="/Recon/Repost">
+                            <div *ngIf="configObject.submitted && reposting.invalid">
+                                <div class="alert alert-danger" *ngIf="reposting.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Reposting Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Reporting Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconReportFileFolder"
+                                name="reconReportFileFolder" #reporting="ngModel" required placeholder="/Recon/Report">
+                            <div *ngIf="configObject.submitted && reporting.invalid">
+                                <div class="alert alert-danger" *ngIf="reporting.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Reporting Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group">
+                            <label>Invalid Folder Path</label>
+                            <input type="text" [(ngModel)]="folderConfigDetail.reconFileErrorsFolder"
+                                name="reconFileErrorsFolder" #invalid="ngModel" required placeholder="/Recon/Invalid">
+                            <div *ngIf="configObject.submitted && invalid.invalid">
+                                <div class="alert alert-danger" *ngIf="invalid.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Invalid Folder Path must be required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dqr_wrap" *ngIf="tabId == '4'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <div class="form_wrap">
+                        <p>Consider For Settlement</p>
+                        <div class="group">
+                            <div class="radio_wrap">
+                                <div class="form-group">
+                                    <input type="radio" id="considerForSett1" name="is_DQR_Required" [value]="true"
+                                        [(ngModel)]="dqrConfigModel.is_DQR_Required"
+                                        (change)="is_DQR_Required = 'true'">
+                                    <label for="considerForSett1">Yes</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="considerForSett2" name="is_DQR_Required" [value]="false"
+                                        [(ngModel)]="dqrConfigModel.is_DQR_Required"
+                                        (change)="is_DQR_Required = 'false'">
+                                    <label for="considerForSett2">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap" *ngIf="dqrConfigModel.is_DQR_Required">
+                        <p>Settlement Configration</p>
+                        <div class="group">
+                            <div class="radio_wrap">
+                                <div class="form-group">
+                                    <input type="radio" id="settConfig1" [(ngModel)]="dqrConfigModel.settlement_Mode"
+                                        name="settlement_Mode" value="0">
+                                    <label for="settConfig1">Auto</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="radio" id="settConfig2" value="1"
+                                        [(ngModel)]="dqrConfigModel.settlement_Mode" name="settlement_Mode">
+                                    <label for="settConfig2">Manual</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap"
+                        *ngIf="dqrConfigModel.settlement_Mode == '0' && dqrConfigModel.is_DQR_Required">
+                        <div class="input_group">
+                            <label>Date</label>
+                            <select [(ngModel)]="dqrConfigModel.execution_Day" name="execution_Day" #dqrDate="ngModel">
+                                <option *ngFor="let dqrDate of dqrDateRange" [value]="dqrDate">{{dqrDate}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form_wrap" *ngIf="dqrConfigModel.is_DQR_Required">
+                        <p>DQR distribution List</p>
+                        <div class="row">
+                            <div class="input_group col multidrop_container">
+                                <label>Users(TO)</label>
+                                <!-- <select [(ngModel)]="dqrEmailTo" name="dqrEmailTo">
+                                    <option *ngFor="let dqrUser of arrDqrUserListTo" [value]="dqrUser.value">
+                                        {{dqrUser.name}}<{{dqrUser.value}}>
+                                    </option>
+                                </select> -->
+                                <div class="selected_text" (click)="isDqrEmailTo=!isDqrEmailTo">
+                                    {{selectedDqrEmailTo}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDqrEmailTo">
+                                    <ul>
+                                        <li *ngFor="let dqrUser of arrDqrUserListTo">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{dqrUser.value}}"
+                                                        (change)="getDqrEmailTo(dqrUser)"
+                                                        [checked]="dqrUser.isSelected">
+                                                    <label for="{{dqrUser.value}}">{{dqrUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserModalTo()">Add</i>
+                            </div>
+                            <div class="input_group col multidrop_container">
+                                <label>Users(CC)</label>
+                                <!-- <select [(ngModel)]="dqrEmailCc" name="dqrEmailCc">
+                                    <option *ngFor="let dqrUser of arrDqrUserListCc" [value]="dqrUser.value">
+                                        {{dqrUser.name}}<{{dqrUser.value}}>
+                                    </option>
+                                </select> -->
+                                <div class="selected_text" (click)="isDqrEmailCc=!isDqrEmailCc">
+                                    {{selectedDqrEmailCc}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDqrEmailCc">
+                                    <ul>
+                                        <li *ngFor="let dqrUser of arrDqrUserListCc">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{dqrUser.value}}"
+                                                        (change)="getDqrEmailCc(dqrUser)"
+                                                        [checked]="dqrUser.isSelected">
+                                                    <label for="{{dqrUser.value}}">{{dqrUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserModalCc()">Add</i>
+                            </div>
+                        </div>
+                        <div class="input_group mt-2">
+                            <label>Email Body</label>
+                            <!-- <div class="mt-1" id="html_editor" [froalaEditor]="options" [(froalaModel)]="content"></div> -->
+                            <textarea [froalaEditor] name="body"
+                                [(ngModel)]="dqrConfigModel.body">{{dqrConfigModel.body}}</textarea>
+                            <!-- <div [froalaView]="dqrConfigModel.froalaEditor"></div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="alert_wrap" *ngIf="tabId == '5'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <div class="form_wrap">
+                        <p>Recon Alert</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="reconAlert1" [(ngModel)]="successAlert" name="isSuccess"
+                                        (ngModelChange)="isSuccessAlert(successAlert)">
+                                    <label for="reconAlert1">Success</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="reconAlert2" [(ngModel)]="missingAlert" name="isMissing"
+                                        (ngModelChange)="isMissingAlert(missingAlert)">
+                                    <label for="reconAlert2">Missing</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="reconAlert3" [(ngModel)]="invalidAlert" name="isInvalid"
+                                        (ngModelChange)="isInvalidAlert(invalidAlert)">
+                                    <label for="reconAlert3">Invalid</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap" *ngIf="successAlert">
+                        <p>Success Alert distribution List</p>
+                        <div class="row">
+                            <div class="input_group success col multidrop_container">
+                                <label>Users(TO)</label>
+                                <div class="selected_text" (click)="isDistSuccessUserTo=!isDistSuccessUserTo">
+                                    {{selectedDistSuccessUserTo}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistSuccessUserTo">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrSuccessUserListTo">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistSuccessUserTo(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserSuccessModalTo()">Add</i>
+                            </div>
+                            <div class="input_group success col multidrop_container">
+                                <label>Users(CC)</label>
+                                <div class="selected_text" (click)="isDistSuccessUserCc=!isDistSuccessUserCc">
+                                    {{selectedDistSuccessUserCc}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistSuccessUserCc">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrSuccessUserListCc">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistSuccessUserCc(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserSuccessModalCc()">Add</i>
+                            </div>
+                        </div>
+                        <div class="input_group mt-2">
+                            <label>Email Body</label>
+                            <!-- <div class="mt-1" id="html_editor" [froalaEditor]="options" [(froalaModel)]="content"></div> -->
+                            <textarea [froalaEditor] name="successDistributionBody"
+                                [(ngModel)]="reconAlertDetails.successDistributionBody">
+                            {{reconAlertDetails.successDistributionBody}}</textarea>
+                            <!-- <div [froalaView]="dqrConfigModel.froalaEditor"></div> -->
+                        </div>
+                    </div>
+                    <div class="form_wrap" *ngIf="missingAlert">
+                        <p>Missing Alert distribution List</p>
+                        <div class="row">
+                            <div class="input_group missing col multidrop_container">
+                                <label>Users(TO)</label>
+                                <div class="selected_text" (click)="isDistMissingUserTo=!isDistMissingUserTo">
+                                    {{selectedDistMissingUserTo}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistMissingUserTo">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrMissingUserListTo">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistMissingUserTo(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserMissingModalTo()">Add</i>
+                            </div>
+                            <div class="input_group missing col multidrop_container">
+                                <label>Users(CC)</label>
+                                <div class="selected_text" (click)="isDistMissingUserCc=!isDistMissingUserCc">
+                                    {{selectedDistMissingUserCc}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistMissingUserCc">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrMissingUserListCc">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistMissingUserCc(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserMissingModalCc()">Add</i>
+                            </div>
+                        </div>
+                        <div class="input_group mt-2">
+                            <label>Email Body</label>
+                            <!-- <div class="mt-1" id="html_editor" [froalaEditor]="options" [(froalaModel)]="content"></div> -->
+                            <textarea [froalaEditor] name="missingDistributionBody"
+                                [(ngModel)]="reconAlertDetails.missingDistributionBody">
+                            {{reconAlertDetails.missingDistributionBody}}</textarea>
+                            <!-- <div [froalaView]="dqrConfigModel.froalaEditor"></div> -->
+                        </div>
+                    </div>
+                    <div class="form_wrap" *ngIf="invalidAlert">
+                        <p>Invalid Alert distribution List</p>
+                        <div class="row">
+                            <div class="input_group invalid col multidrop_container">
+                                <label>Users(TO)</label>
+                                <div class="selected_text" (click)="isDistInvalidUserTo=!isDistInvalidUserTo">
+                                    {{selectedDistInvalidUserTo}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistInvalidUserTo">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrInvalidUserListTo">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistInvalidUserTo(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserInvalidModalTo()">Add</i>
+                            </div>
+                            <div class="input_group invalid col multidrop_container">
+                                <label>Users(CC)</label>
+                                <div class="selected_text" (click)="isDistInvalidUserCc=!isDistInvalidUserCc">
+                                    {{selectedDistInvalidUserCc}}
+                                </div>
+                                <div class="dropdown_multiselect" *ngIf="isDistInvalidUserCc">
+                                    <ul>
+                                        <li *ngFor="let distUser of arrDqrInvalidUserListCc">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{distUser.value}}"
+                                                        (change)="getDistInvalidUserCc(distUser)"
+                                                        [checked]="distUser.isSelected">
+                                                    <label for="{{distUser.value}}">{{distUser.name}}</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <i class="fa fa-plus-circle" (click)="openDqrUserInvalidModalCc()">Add</i>
+                            </div>
+                        </div>
+                        <div class="input_group mt-2">
+                            <label>Email Body</label>
+                            <!-- <div class="mt-1" id="html_editor" [froalaEditor]="options" [(froalaModel)]="content"></div> -->
+                            <textarea [froalaEditor] name="invalidDistributionBody"
+                                [(ngModel)]="reconAlertDetails.invalidDistributionBody">
+                            {{reconAlertDetails.invalidDistributionBody}}</textarea>
+                            <!-- <div [froalaView]="dqrConfigModel.froalaEditor"></div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="report_wrap" *ngIf="tabId == '6'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <div class="form_wrap">
+                        <p>Daily Mail Logs</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="dailyErrorLog1" name="logByErrorTypeDaily"
+                                        [(ngModel)]="reconReportDetails.logByErrorTypeDaily">
+                                    <label for="dailyErrorLog1">Logs by error types</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="dailyErrorLog2" name="errorSuccessDetailsDaily"
+                                        [(ngModel)]="reconReportDetails.errorSuccessDetailsDaily">
+                                    <label for="dailyErrorLog2">Error Success Details</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_wrap">
+                        <p>Monthly Mail Log</p>
+                        <div class="group">
+                            <div class="checkbox_wrap">
+                                <div class="form-group">
+                                    <input type="checkbox" id="monthlyErrorLog1" name="logByErrorTypeMonthly"
+                                        [(ngModel)]="reconReportDetails.logByErrorTypeMonthly">
+                                    <label for="monthlyErrorLog1">Logs by error types</label>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" id="monthlyLog1" name="logByDayMonthly"
+                                        [(ngModel)]="reconReportDetails.logByDayMonthly">
+                                    <label for="monthlyLog1">Logs by Days</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="setting_wrap" *ngIf="tabId == '7'">
+                    <input type="hidden" [(ngModel)]="reconGeneralDetail.brandId" name="brandId">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Program Config
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>Point Name</label>
+                                    <input type="text" name="pointName" [(ngModel)]="configSetting.pointName"
+                                        [disabled]="reconGeneralDetail.fileType == 'sale'">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Point Rate</label>
+                                    <input type="text" name="pointRate" [(ngModel)]="configSetting.pointRate">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Recon Type</label>
+                                    <select [(ngModel)]="configSetting.reconTypeID" name="reconTypeID"
+                                        (change)="getReconType()" id="reconTypeSelect">
+                                        <option [ngValue]="1">Mobile</option>
+                                        <option [ngValue]="3">Client Id</option>
+                                        <option [ngValue]="5">Member Id</option>
+                                    </select>
+                                    <input type="hidden" name="reconType" [(ngModel)]="configSetting.reconType">
+                                </div>
+                            </div>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>Recon User</label>
+                                    <input type="text" name="reconUser" [(ngModel)]="configSetting.reconUser">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Based on MRP/RSP</label>
+                                    <input type="text" name="basedOnMRPRSP" [(ngModel)]="configSetting.basedOnMRPRSP"
+                                        [disabled]="reconGeneralDetail.fileType == 'sale'">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Country Code</label>
+                                    <input type="text" name="countryCode" [(ngModel)]="configSetting.countryCode">
+                                </div>
+                                <div class="input_group col-4"
+                                    *ngIf="reconGeneralDetail.isGV || missingRedemptionByAll">
+                                    <label>GV Name</label>
+                                    <input type="text" name="gvName" [(ngModel)]="configSetting.gvName">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>POS Type</label>
+                                    <input type="text" name="POSType" [(ngModel)]="configSetting.POSType">
+                                </div>
+                                <!-- <div class="input_group col-6">
+                                    <label>Channel</label>
+                                    <input type="text" name="channel" [(ngModel)]="configSetting.channel">
+                                </div>
+                                <div class="input_group col-6">
+                                    <label>Customer Type</label>
+                                    <input type="text" name="customerType" [(ngModel)]="configSetting.customerType">
+                                </div> -->
+                                <div class="group col-4">
+                                    <div class="checkbox_wrap">
+                                        <div class="form-group">
+                                            <input type="checkbox" id="ReprocessingFlag" name="ReprocessingFlag"
+                                                [(ngModel)]="configSetting.ReprocessingFlag">
+                                            <label for="ReprocessingFlag">Reprocessing Flag</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input_group col-4" *ngIf="configSetting.ReprocessingFlag">
+                                    <label>LookBack Period</label>
+                                    <input type="number" name="LookBackPeriod"
+                                        [(ngModel)]="configSetting.LookBackPeriod">
+                                </div>
+                                <div class="input_group col-4" *ngIf="configSetting.ReprocessingFlag">
+                                    <label>Tolerance Period</label>
+                                    <input type="number" name="TolerancePeriod"
+                                        [(ngModel)]="configSetting.TolerancePeriod">
+                                </div>
+                                <div class="group col-4">
+                                    <div class="checkbox_wrap">
+                                        <div class="form-group">
+                                            <input type="checkbox" id="isSuppoortNegative1" name="isSuppoortNegative"
+                                                [(ngModel)]="configSetting.isSuppoortNegative"
+                                                [disabled]="reconGeneralDetail.fileType != 'sale'">
+                                            <label for="isSuppoortNegative1">Support Negative</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="group col-4 hide">
+                                    <div class="checkbox_wrap">
+                                        <div class="form-group">
+                                            <input type="checkbox" id="isLoyality1" name="isLoyality"
+                                                [(ngModel)]="configSetting.isLoyality">
+                                            <label for="isLoyality1">Loyality</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    UAT Settings
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>Web API URL</label>
+                                    <input type="text" name="pilotWebAPIURL" [(ngModel)]="configSetting.pilotWebAPIURL">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Dummy Store Code</label>
+                                    <input type="text" name="dummyStorecode" [(ngModel)]="configSetting.dummyStorecode">
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    API Credential
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>App ID</label>
+                                    <input type="text" name="appid" [(ngModel)]="configSetting.appid">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Dev ID</label>
+                                    <input type="text" name="devID" [(ngModel)]="configSetting.devID">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>API Host</label>
+                                    <input type="text" name="apiHost" [(ngModel)]="configSetting.apiHost">
+                                </div>
+                                <!-- <div class="input_group col-4">
+                                    <label>API User Name</label>
+                                    <input type="text" name="apiUserName"
+                                        [(ngModel)]="configSetting.apiUserName">
+                                </div> -->
+                                <div class="input_group col-4">
+                                    <label>API Password</label>
+                                    <input type="password" name="apiPassword" [(ngModel)]="configSetting.apiPassword">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>API User</label>
+                                    <input type="text" name="apiUser" [(ngModel)]="configSetting.apiUserName">
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    FTP credential
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>FTP User Name</label>
+                                    <input type="text" name="ftpUserName" [(ngModel)]="configSetting.ftpUserName">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>FTP Password</label>
+                                    <input type="password" name="ftpPassword" [(ngModel)]="configSetting.ftpPassword">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>FTP Host Name</label>
+                                    <input type="text" name="ftpHost" [(ngModel)]="configSetting.ftpHost">
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+                            *ngIf="sqlConn == 'yes'">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Sql Connections
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>Brand Connection</label>
+                                    <input type="text" name="connectionString"
+                                        [(ngModel)]="configSetting.connectionString">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Master Connection</label>
+                                    <input type="text" name="reconConnection"
+                                        [(ngModel)]="configSetting.reconConnection">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>External Connection</label>
+                                    <input type="text" name="externalServerConnection"
+                                        [(ngModel)]="configSetting.externalServerConnection">
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+                            *ngIf="sqlConn == 'yes'">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Purge Policy
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="form_wrap row">
+                                <div class="input_group col-4">
+                                    <label>No. Of Days</label>
+                                    <input type="text" name="noOfDays" [(ngModel)]="configSetting.noOfDays">
+                                </div>
+                                <div class="input_group col-4">
+                                    <label>Proccessing Time(24 hr Format)</label>
+                                    <input type="text" name="proccessing_time"
+                                        [(ngModel)]="configSetting.proccessing_time">
+                                    <img src="assets/images/clock.svg">
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+                <div class="all_data_wrap" *ngIf="tabId == '8'">
+
+
+                    <div class='mt-4 dr-table'>
+                        <table>
+                            <tbody>
+                                <tr class="table-header">
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">App ID
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.appid}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Dev ID
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">User Name
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.apiUserName}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Password
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.apiPassword}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Program Code
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconGeneralDetails.programCode}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">API User Name
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span
+                                            class="totalbill_wrap">{{this.reconSeatingsDetails.apiUserName}}##{{this.reconSeatingsDetails.apiHost}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">API Password
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.apiPassword}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">API User
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.apiUser}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Point Name
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.pointName}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Point Rate
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.pointRate}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">FTP User Name
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.ftpUserName}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">FTP Password
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.ftpPassword}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">FTP Host Name
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.ftpHost}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">FTP Folder Path
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.ftpFolderPath}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Pilot Web API URL(Base URL)
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.pilotWebAPIURL}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <!-- <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Tender Code
+                                        </span>
+
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                        </span>
+                                    </th>
+
+
+                                </tr> -->
+                                <!-- <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Email ID
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                        </span>
+                                    </th>
+
+
+                                </tr> -->
+                                <!-- <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Dummy Store Code
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.dummyStorecode}}
+                                        </span>
+                                    </th>
+
+
+                                </tr> -->
+                                <!-- <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Environment
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                        </span>
+                                    </th>
+
+
+                                </tr> -->
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Recon User
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.reconUser}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Recon Type
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.reconType}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Based on MRP or RSP
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.basedOnMRPRSP}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <!-- <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">File Receving Time in FTP
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                        </span>
+                                    </th>
+
+
+                                </tr> -->
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Country Code
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.countryCode}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Channel
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.Channel}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <span class="totalbill_wrap">Customer Type
+                                        </span>
+                                    </th>
+                                    <th>
+                                        <span class="totalbill_wrap">{{this.reconSeatingsDetails.customerType}}
+                                        </span>
+                                    </th>
+
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+
+
+
+
+                <div class="action_btn row ">
+
+
+
+                    <div class="textarea_wrap row " *ngIf="tabId == '8' && !isActiveProgram">
+
+                        <div class="btn_wrap_cancel">
+                            <button class="action_btn_cancel" (click)="isInactive()">Cancel</button>
+                            <!-- <div  id="overlay" class="tooltip_wrap" (click)="off()"> -->
+                            <div *ngIf="tooltip" class="bottom_arrow"></div>
+                            <div *ngIf="tooltip" class="tool_tip">
+                                <h5 class="modal_title">Remarks</h5>
+                                <div class="modal_body">
+                                    <textarea class="textarea_input" type="text" name="feedback"
+                                        [(ngModel)]="feedbacktext" required id="feedback_text"
+                                        (keyup)="textareaValidation()"></textarea>
+
+                                    <span class="errortxt">{{errortext}}</span>
+                                </div>
+                                <div class="modal_footer" id="footer_model">
+                                    <button type="button" class="action_btn_cancel"
+                                        (click)="closeTooltip()">Cancel</button>
+                                    <button type="button" class="action_btn_save" data-dismiss="modal"
+                                        (click)="saveRemark()">Save</button>
+                                </div>
+                            </div>
+                            <!-- </div> -->
+
+                        </div>
+
+
+                        <div class="btn_wrap ">
+                            <button class="action_btn_save" type="submit" id="saveavtive" (click)="isActive()">Save
+                            </button>
+                        </div>
+                    </div>
+
+
+
+
+                    <button type="submit" *ngIf="tabId != '8'">Save & Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- <div class="tool_tip">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Remarks</h5>
+                    <div class="modal_body">
+                        <textarea class="textarea_input" type="text" name="feedback" [(ngModel)]="feedbacktext"></textarea>
+                    </div>
+                    <div class="modal_footer">
+                        <button type="button" class="action_btn_cancel" data-dismiss="modal" >Cancel</button>
+                        <button type="button" class="action_btn_save" data-dismiss="modal" (click)="saveRemark()">Save</button>
+                    </div>
+                </div> -->
+<!-- 
+<div class="remark_wrap">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Remarks</h5>
+
+                </div>
+                <div class="modal-body">
+                    <textarea class="textarea_input" type="text" name="feedback" [(ngModel)]="feedbacktext"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="action_btn_cancel" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="action_btn_save" data-dismiss="modal"
+                        (click)="saveRemark()">Save</button>
+                </div>
+               
+
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal  -->
+<div class="modal fade" role="dialog" id="dqrUserModalTo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">DQR Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserObjTo="ngForm" name="dqrObjForm"
+                    (ngSubmit)="dqrUserObjTo.form.valid && addDqrUserTo(dqrUserObjTo)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserObjName="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserObjTo.submitted || dqrUserObjName.invalid && (dqrUserObjName.dirty || dqrUserObjName.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserObjName.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserObjName.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel
+                                #dqrUserObjEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
+                            <div
+                                *ngIf="dqrUserObjTo.submitted || dqrUserObjEmail.invalid && (dqrUserObjEmail.dirty || dqrUserObjEmail.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserObjEmail.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserObjEmail.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrUserListTo; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrEmailTo(i)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="dqrUserModalCc">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">DQR Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserObjCc="ngForm" (ngSubmit)="dqrUserObjCc.form.valid && addDqrUserCc(dqrUserObjCc)"
+                    novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserNameCc="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserObjCc.submitted || dqrUserNameCc.invalid && (dqrUserNameCc.dirty || dqrUserNameCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserNameCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserNameCc.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel required
+                                #dqrUserEmailCc="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                            <div
+                                *ngIf="dqrUserObjCc.submitted || dqrUserEmailCc.invalid && (dqrUserEmailCc.dirty || dqrUserEmailCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserEmailCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserEmailCc.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrUserListCc; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrEmailCc(i)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="dqrUserSuccessModalTo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Alert Success Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserSuccessObjTo="ngForm" name="dqrSuccessObjFormTo"
+                    (ngSubmit)="dqrUserSuccessObjTo.form.valid && addDqrSuccessUserTo(dqrUserSuccessObjTo)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserSuccessObjName="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserSuccessObjTo.submitted || dqrUserSuccessObjName.invalid && (dqrUserSuccessObjName.dirty || dqrUserSuccessObjName.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessObjName.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessObjName.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel
+                                #dqrUserSuccessObjEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                required>
+                            <div
+                                *ngIf="dqrUserSuccessObjTo.submitted || dqrUserSuccessObjEmail.invalid && (dqrUserSuccessObjEmail.dirty || dqrUserSuccessObjEmail.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessObjEmail.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessObjEmail.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrSuccessUserListTo; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrSuccessEmailTo(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="dqrUserSuccessModalCc">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">DQR Success Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserSuccessObjCc="ngForm" name="dqrSuccessObjFormCc"
+                    (ngSubmit)="dqrUserSuccessObjCc.form.valid && addDqrSuccessUserCc(dqrUserSuccessObjCc)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserSuccessNameCc="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserSuccessObjCc.submitted || dqrUserSuccessNameCc.invalid && (dqrUserSuccessNameCc.dirty || dqrUserSuccessNameCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessNameCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessNameCc.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel required
+                                #dqrUserSuccessEmailCc="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                            <div
+                                *ngIf="dqrUserSuccessObjCc.submitted || dqrUserSuccessEmailCc.invalid && (dqrUserSuccessEmailCc.dirty || dqrUserSuccessEmailCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessEmailCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserSuccessEmailCc.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrSuccessUserListCc; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrSuccessEmailCc(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" role="dialog" id="dqrUserMissingModalTo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Alert Missing Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserMissingObjTo="ngForm" name="dqrMissingObjFormTo"
+                    (ngSubmit)="dqrUserMissingObjTo.form.valid && addDqrMissingUserTo(dqrUserMissingObjTo)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserMissingObjName="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserMissingObjTo.submitted || dqrUserMissingObjName.invalid && (dqrUserMissingObjName.dirty || dqrUserMissingObjName.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingObjName.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingObjName.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel
+                                #dqrUserMissingObjEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                required>
+                            <div
+                                *ngIf="dqrUserMissingObjTo.submitted || dqrUserMissingObjEmail.invalid && (dqrUserMissingObjEmail.dirty || dqrUserMissingObjEmail.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingObjEmail.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingObjEmail.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrMissingUserListTo; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrMissingEmailTo(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="dqrUserMissingModalCc">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">DQR Missing Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserMissingObjCc="ngForm" name="dqrMissingObjFormCc"
+                    (ngSubmit)="dqrUserMissingObjCc.form.valid && addDqrMissingUserCc(dqrUserMissingObjCc)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserMissingNameCc="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserMissingObjCc.submitted || dqrUserMissingNameCc.invalid && (dqrUserMissingNameCc.dirty || dqrUserMissingNameCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingNameCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingNameCc.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel required
+                                #dqrUserMissingEmailCc="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                            <div
+                                *ngIf="dqrUserMissingObjCc.submitted || dqrUserMissingEmailCc.invalid && (dqrUserMissingEmailCc.dirty || dqrUserMissingEmailCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingEmailCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserMissingEmailCc.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrMissingUserListCc; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrMissingEmailCc(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" role="dialog" id="dqrUserInvalidModalTo">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Alert Invalid Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserInvalidObjTo="ngForm" name="dqrInvalidObjFormTo"
+                    (ngSubmit)="dqrUserInvalidObjTo.form.valid && addDqrInvalidUserTo(dqrUserInvalidObjTo)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserInvalidObjName="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserInvalidObjTo.submitted || dqrUserInvalidObjName.invalid && (dqrUserInvalidObjName.dirty || dqrUserInvalidObjName.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidObjName.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidObjName.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel
+                                #dqrUserInvalidObjEmail="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                required>
+                            <div
+                                *ngIf="dqrUserInvalidObjTo.submitted || dqrUserInvalidObjEmail.invalid && (dqrUserInvalidObjEmail.dirty || dqrUserInvalidObjEmail.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidObjEmail.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidObjEmail.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrInvalidUserListTo; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrInvalidEmailTo(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="dqrUserInvalidModalCc">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">DQR Invalid Distribution List</h4>
+            </div>
+            <div class="modal-body">
+                <form #dqrUserInvalidObjCc="ngForm" name="dqrInvalidObjFormCc"
+                    (ngSubmit)="dqrUserInvalidObjCc.form.valid && addDqrInvalidUserCc(dqrUserInvalidObjCc)" novalidate>
+                    <div class="user_add_wrap row">
+                        <div class="input_group col">
+                            <label>Name</label>
+                            <input placeholder="Enter Name" type="text" name="name" ngModel required
+                                #dqrUserInvalidNameCc="ngModel" minlength="4">
+                            <div
+                                *ngIf="dqrUserInvalidObjCc.submitted || dqrUserInvalidNameCc.invalid && (dqrUserInvalidNameCc.dirty || dqrUserInvalidNameCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidNameCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidNameCc.errors?.minlength">
+                                    <i class="fa fa-info-circle"></i>
+                                    Name must be at least 4 characters long.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col">
+                            <label>Email</label>
+                            <input placeholder="Enter Email" type="email" name="value" ngModel required
+                                #dqrUserInvalidEmailCc="ngModel" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                            <div
+                                *ngIf="dqrUserInvalidObjCc.submitted || dqrUserInvalidEmailCc.invalid && (dqrUserInvalidEmailCc.dirty || dqrUserInvalidEmailCc.touched)">
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidEmailCc.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Email must be required.
+                                </div>
+                                <div class="alert alert-danger" *ngIf="dqrUserInvalidEmailCc.errors?.pattern">
+                                    <i class="fa fa-info-circle"></i>
+                                    This is not a valid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_group col-3">
+                            <button class="fa fa-plus-circle" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dqrUser of arrDqrInvalidUserListCc; let i = index">
+                            <td>{{dqrUser.name}}</td>
+                            <td>{{dqrUser.value}}</td>
+                            <td><i class="fa fa-trash" (click)="removeDqrInvalidEmailCc(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-content">
+                <div class="card">
+                    <div class='card-body'>
+                        <div class="backbuttonSetting d-flex justify-content-end">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="all_data_wrap">
+
+
+                            <div class='mt-4 dr-table'>
+                                <table>
+                                    <tbody>
+                                        <tr class="table-header">
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">App ID
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.appid}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Dev ID
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.devID}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">User Name
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.apiUserName}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Password
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.apiPassword}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Program Code
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconGeneralDetails?.programCode}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">API User Name
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span
+                                                    class="totalbill_wrap">{{this.reconSeatingsDetails?.apiUserName}}##{{this.reconSeatingsDetails?.apiHost}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">API Password
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.apiPassword}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">API User
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.apiUser}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Point Name
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.pointName}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Point Rate
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.pointRate}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">FTP User Name
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.ftpUserName}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">FTP Password
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.ftpPassword}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">FTP Host Name
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.ftpHost}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">FTP Folder Path
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span
+                                                    class="totalbill_wrap">{{this.reconSeatingsDetails?.ftpFolderPath}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Pilot Web API URL(Base URL)
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span
+                                                    class="totalbill_wrap">{{this.reconSeatingsDetails?.pilotWebAPIURL}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <!-- <tr>
+    
+                                        <th>
+                                            <span class="totalbill_wrap">Tender Code
+                                            </span>
+    
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                            </span>
+                                        </th>
+    
+    
+                                    </tr> -->
+                                        <!-- <tr>
+    
+                                        <th>
+                                            <span class="totalbill_wrap">Email ID
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                            </span>
+                                        </th>
+    
+    
+                                    </tr> -->
+                                        <!-- <tr>
+    
+                                        <th>
+                                            <span class="totalbill_wrap">Dummy Store Code
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{this.reconSeatingsDetails.dummyStorecode}}
+                                            </span>
+                                        </th>
+    
+    
+                                    </tr> -->
+                                        <!-- <tr>
+    
+                                        <th>
+                                            <span class="totalbill_wrap">Environment
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                            </span>
+                                        </th>
+    
+    
+                                    </tr> -->
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Recon User
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.reconUser}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Recon Type
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.reconType}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Based on MRP or RSP
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span
+                                                    class="totalbill_wrap">{{this.reconSeatingsDetails?.basedOnMRPRSP}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <!-- <tr>
+    
+                                        <th>
+                                            <span class="totalbill_wrap">File Receving Time in FTP
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{this.reconSeatingsDetails.devID}}
+                                            </span>
+                                        </th>
+    
+    
+                                    </tr> -->
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Country Code
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.countryCode}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Channel
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.Channel}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+                                        <tr>
+
+                                            <th>
+                                                <span class="totalbill_wrap">Customer Type
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span class="totalbill_wrap">{{this.reconSeatingsDetails?.customerType}}
+                                                </span>
+                                            </th>
+
+
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

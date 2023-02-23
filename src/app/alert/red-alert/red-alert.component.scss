@@ -1,0 +1,101 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+.digital-reciept{
+    .container{
+        .card{
+            border: 1px solid #ffffff;
+        .title{
+            h3{    
+                font-size: 22px;
+                font-weight: 500;
+            }
+            input{
+                background: #f9f9f9;
+                border: 1px solid #f9f9f9;
+                outline: none;
+                color: #959795; 
+            }
+        }
+        .input-style {
+            height: 44px;
+            width: 90%;
+            padding-left: 11px;
+            border-radius: 3px;
+            background: #f9f9f9;
+            outline: 0;
+            box-shadow: none;
+            border: 1px solid #eeecec;
+        }
+        .search-inovice{
+            
+            .date_wrap{
+                height: 44px;
+                background: #f9f9f9;
+                border: 1px solid #f9f9f9;
+                outline: none;
+                color: #959795;
+            }
+        }
+        
+        .btnsearch{
+            border: 1px solid #00B894;
+            box-shadow: none;
+            position: relative;
+            font-weight: 500;
+            cursor: pointer;
+            color: #ffffff;
+            display: inline-block;
+            font-size: 14px;
+            padding: 11px 15px 11px;
+            background: #00B894;
+            outline: none;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            min-width: 120px;
+            margin-top: 31px;
+        }
+
+
+
+
+      
+        .dr-table{
+          max-height: 400px;
+          overflow-y: auto;
+           table{
+                width: 100%;
+                text-align: center;
+                
+           }
+           .table-header{
+                background-color: #f9f9f9;
+                line-height: 25px;
+                color:black;
+                font-size: 13px;
+                font-weight: 300;
+           }
+           tr{
+                background-color: white;
+                line-height: 30px;
+               
+                color: #959795;
+                font-size: 13px;
+                font-weight: 300;
+                th{
+                min-width: 100px;
+                line-height: 19px;
+                padding: 10px;
+                }
+               
+           }
+           .button-style{
+               background: none;
+                border: none;
+                outline: none;
+                color: #959795;
+                font-size: 18px;
+           }
+        }
+    }
+    }
+}

@@ -1,0 +1,182 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+.page_content {
+  nav {
+    padding: 0px 30px;
+    .navbar-brand {
+      padding: 5px 0;
+      margin: 0;
+      padding-right: 20px;
+      :focus {
+        outline: none;
+      }
+      img {
+        max-width: 69px;
+        width: 100%;
+        :focus {
+          outline: none;
+        }
+      }
+    }
+    .navbar-nav {
+      padding: 0 30px;
+      li {
+        margin-right: 20px;
+
+        .dropdown_multiselect {
+          // position: absolute;
+          // top: 42px;
+          // z-index: 99;
+
+          ul {
+            @include img-box-shadow;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            background: $color-white;
+
+            width: 180px;
+            position: absolute;
+            top: 42px;
+            z-index: 99;
+
+            min-height: 51px;
+            overflow-y: auto;
+            border-radius: 5px;
+            li {
+              padding: 10px 15px 10px 15px;
+              margin-right: 0px !important;
+
+              .checkbox_wrap {
+                @include radio;
+                label {
+                  width: 100%;
+                  padding-left: 0 !important;
+                  &:before {
+                    left: 93% !important;
+                    border: none !important;
+                  }
+                  &:after {
+                    left: 90% !important;
+                    background: none !important;
+                    border: none !important;
+                  }
+                  text-transform: capitalize;
+                }
+                .form-group {
+                  margin-bottom: 0;
+                  input[type="radio"] {
+                    &:checked + label {
+                      color: $theme-color;
+                      &:after {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        top: 3px !important;
+                        right: 13px !important;
+                        width: 7px !important;
+                        height: 14px !important;
+                        border: solid $theme-color !important;
+                        border-width: 0 2px 2px 0 !important;
+                        transform: rotate(45deg) !important;
+                        border-radius: 0% !important;
+                      }
+                    }
+                  }
+                }
+              }
+              &:hover {
+                background-color: rgba($theme-color, 0.06);
+              }
+            }
+          }
+          // .see_all {
+          //   position: absolute;
+          //   top: 226px;
+          //   z-index: 99;
+          //   width: 78%;
+          //   left: 15px;
+          //   padding: 10px;
+          //   background: $color-white;
+          //   cursor: pointer;
+          //   color: $theme-color;
+          //   p {
+          //     margin: 0 auto;
+          //   }
+          // }
+        }
+        .nav-link {
+          @include paragraph;
+          padding: 0px 10px;
+          line-height: 49px;
+          vertical-align: middle;
+          color: $color-white;
+          i {
+            font-size: 18px;
+            color: $color-light-black;
+          }
+        }
+        &.active {
+          a {
+            color: $theme-color;
+          }
+        }
+      }
+    }
+    .nav_right_panel {
+      padding: 0;
+      border-left: none;
+
+      .btnsearch {
+        border: 1px solid #00b894;
+        box-shadow: none;
+        position: relative;
+        font-weight: 500;
+        cursor: pointer;
+        color: #00b894;
+        display: inline-block;
+        font-size: 14px;
+        padding: 5px 10px 5px;
+        background: #ffffff;
+        outline: none;
+        margin-bottom: 0px;
+        border-radius: 3px;
+        min-width: 90px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        &:hover {
+          outline: none;
+          text-decoration: none;
+          box-shadow: 0px 17px 10px -10px rgb(0 184 148 / 30%);
+          cursor: pointer;
+          transition: all ease-in-out 300ms;
+        }
+      }
+      li {
+        margin-right: 0;
+        .dropdown-menu {
+          .profile_icon {
+            .icon {
+              margin: 0 auto;
+              border-radius: 50%;
+              width: 50px;
+              height: 50px;
+            }
+            p {
+              @include paragraph;
+              text-align: center;
+              font-size: 14px;
+            }
+            a {
+              color: $color-light-black;
+              i {
+                color: $color-light-black;
+                padding-right: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

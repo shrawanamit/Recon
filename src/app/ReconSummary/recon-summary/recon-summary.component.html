@@ -1,0 +1,266 @@
+<!-- card-panel styles -->
+<section class="pannel-section">
+    <div class="reconLoadingData" *ngIf="loadingData">
+        <button class="btn btn-dark">
+            <span class="text-light spinner-border spinner-border-sm"></span>
+            Loading! Please wait ...
+        </button>
+    </div>
+    <div class="container">
+        <div class="page_content_dash" *ngIf="!storeWiseSummary">
+            <div class="filter_input_wrap" *ngIf="!isClickedSearch">
+                <form #searchFilter="ngForm" name="form"
+                    (ngSubmit)="searchFilter.form.valid && getSearchData(searchFilter);" novalidate>
+                    <div class="row">
+                        <div class="form-group col-2 multidrop_container">
+                            <label>Select Program single</label>
+                            <div class="selected_text" (click)="isProgramClicked=!isProgramClicked">
+                                {{selectedProgram}}
+                                <input type="hidden" name="programData" [(ngModel)]="selectedProgram"
+                                    [value]="selectedProgram" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Program.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect" *ngIf="isProgramClicked">
+                                <ul>
+                                    <li *ngFor="let program of programData">
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="radio" id="{{program.brandId}}" name="brandName"
+                                                    (change)="getselectedProgramSingle(program)"
+                                                    [checked]="program.isSelect">
+                                                <label for="{{program.brandId}}">{{program.brandName}}</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="text-center see_all" (click)="seeAllPrograms()" *ngIf="!isSingleBrand">
+                                    <p>See All Program</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- select country -->
+                        <div class="form-group col-2 multidrop_container">
+                            <label>Country</label>
+                            <div class="selected_text" (click)="isCountryClicked=!isCountryClicked">
+                                {{selectedCountry}}
+                                <input type="hidden" name="programData" [(ngModel)]="selectedCountry"
+                                    [value]="selectedCountry" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Country.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect" *ngIf="isCountryClicked">
+                                <ul>
+                                    <li *ngFor="let program of reconCountryWithModes">
+                                        <div class="checkbox_wrap">
+                                            <div class="form-group">
+                                                <input type="checkbox" id="{{program.countryID}}" name="brandName"
+                                                    (change)="getselectedCountry(program)"
+                                                    [checked]="program.isSelectCountry">
+                                                <label for="{{program.countryID}}">{{program.countryName}}</label>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <!-- select mode -->
+                        <div class="form-group col-2 multidrop_container">
+                            <label>Mode Type</label>
+                            <div class="selected_text" (click)="isBillTypeClick=!isBillTypeClick">
+                                {{selectedCountryModeType}}
+                                <input type="hidden" name="programData" [(ngModel)]="selectedCountryModeType"
+                                    [value]="selectedCountryModeType" required #selectedProg="ngModel">
+                            </div>
+                            <div
+                                *ngIf="searchFilter.submitted || selectedProg.invalid && (selectedProg.dirty || selectedProg.touched)">
+                                <div class="alert alert-danger" *ngIf="selectedProg.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Bill Type.
+                                </div>
+                            </div>
+                            <div class="dropdown_multiselect_mode" *ngIf="isBillTypeClick">
+                                <ul>
+                                    <li *ngFor="let program of selectedCountryMode">
+                                        <!-- <div *ngFor="let program of selectedCountryMode"> -->
+                                        <div class="multiselect_mode_type"
+                                            *ngFor="let countrymode of program.reconModes">
+                                            <div class="checkbox_wrap">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="{{countrymode.refrenceID}}"
+                                                        name="brandName"
+                                                        (change)="handleCountryModeType(countrymode,program)"
+                                                        [checked]="countrymode.isSelectMode">
+                                                    <label
+                                                        for="{{countrymode.refrenceID}}">{{countrymode.modeName}}({{program.countryCode}})</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Filter By</label>
+                            <div class="select_wrap">
+                                <select name="SettlementSatus" [(ngModel)]="SettlementSatus"
+                                    (ngModelChange)="changeSettData(SettlementSatus)" required
+                                    #settlementSatus="ngModel">
+                                    <option [ngValue]="1">Date Range</option>
+                                    <option [ngValue]="2">Month</option>
+                                </select>
+                            </div>
+
+                            <div
+                                *ngIf="searchFilter.submitted || settlementSatus.invalid && (settlementSatus.dirty || settlementSatus.touched)">
+                                <div class="alert alert-danger" *ngIf="settlementSatus.errors?.required">
+                                    <i class="fa fa-info-circle"></i>
+                                    Please Select Settelment Data.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-2" *ngIf="isMonthSelect">
+                            <label>Select Month</label>
+                            <input [(ngModel)]="requetDate" autocomplete="off" name="requetDate" bsDatepicker
+                                [bsConfig]="{dateInputFormat: 'MM/YYYY'}" (onShown)="onOpenCalendar($event)" required>
+                            <img class="monthImg" src="assets/images/calendar.svg" (onShown)="onOpenCalendar($event)">
+                        </div>
+                        <div class="form-group col-2 date" *ngIf="isDateSelect">
+                            <label>Date</label>
+                            <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                                #dateRangePicker></ngx-mat-drp>
+                            <img class="dateImg" src="/assets/images/calendar.svg">
+                        </div>
+                        <div class="form-group col-2 action_btn">
+                            <button type="submit">
+                                <span *ngIf="searchInProgress && isLoading"
+                                    class="text-light spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
+                                Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card mt-3" *ngIf="storeWiseSummary ">
+            <div class="summary_heading_wrap">
+                <div class="summary_heading">
+                    <span class="summary_heading_main">Program Name</span><br />
+                    <!-- <span class="summary_heading_title">{{selectedProgram}}</span> -->
+                    <p>{{selectedProgram}}</p>
+                </div>
+                <div class="summary_heading">
+                    <span class="summary_heading_main">country</span><br />
+                    <!-- <span class="summary_heading_title">{{selectedCountry}}</span> -->
+                    <p>{{selectedCountry}}</p>
+                </div>
+                <div class="summary_heading">
+                    <span class="summary_heading_main">Mode Type</span><br />
+                    <!-- <span class="summary_heading_title">{{selectedCountryModeType}}</span> -->
+                    <p>{{selectedCountryModeType}}</p>
+                </div>
+                <div class="summary_heading">
+                    <span class="summary_heading_main">Filter By</span><br />
+                    <!-- <span class="summary_heading_title">{{}}</span> -->
+                    <p>{{filterBy}}</p>
+                </div>
+                <div class="summary_heading">
+                    <span class="summary_heading_main">Date</span><br />
+                    <!-- <span class="summary_heading_title">{{Bata}}</span> -->
+                    <p *ngIf="isDateSelect">{{startDate | date}} - {{endDate | date}}</p>
+                    <p *ngIf="!isDateSelect">{{monthNew}} - {{yearNew}}</p>
+                </div>
+                <div class="edit_field">
+                    <small class="icon-info-tooltip" data-tip="Edit Search Field" tabindex="2">
+                        <img class="img_refresh" src="/assets/images/pencil.svg" (click)="backButton()">
+                    </small>
+                </div>
+            </div>
+
+            <div class="space">
+            </div>
+
+            <div class='card-body ' *ngFor="let response of responceData;let i = index">
+                <div class="title d-flex justify-content-between">
+                    <div class="table_heading_wrap">
+                        <div class="heading">
+                            <h3>
+                                <!-- <span class="program_name">Program Name</span><br/> -->
+                                {{responceData[i].tableHeader}}
+                            </h3>
+                        </div>
+                        <!-- <div class="edit_field">
+                            <small class="icon-info-tooltip" data-tip="Edit Search Field" tabindex="2">
+                                <img class="img_refresh" src="/assets/images/pencil.svg" (click)="backButton()">
+                            </small>
+                        </div> -->
+                    </div>
+                    <div class="search-inovice">
+                        <!-- <input id="searhDate" type="date" (change)="Filters($event)" [value]="todaysDate" />
+                        <small class="icon-info-tooltip" data-tip="Refresh " tabindex="2">
+                            <img class="img_refresh" src="/assets/images/refresh.svg" (click)="refresh()">
+                        </small> -->
+                    </div>
+                </div>
+                <div class="space">
+                </div>
+                <div class='dr-table' *ngIf="responceData[i].brandErrorSucces.length >0">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th>Brand</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Add</th>
+                                <th>Update</th>
+                                <th>Accural Missing</th>
+                                <th>HardError</th>
+                                <th>SoftError</th>
+                                <th>Matched</th>
+                                <th>Nonloyality</th>
+                                <th>#Remarks</th>
+                            </tr>
+                            <tr *ngFor="let datas of responceData[i].brandErrorSucces;let i = index">
+                                <th>{{datas.brandName}}</th>
+                                <th>{{datas.billDate | date}}</th>
+                                <th>{{datas.totalCount}}</th>
+                                <th>{{datas.missingSuccessCount}}</th>
+                                <!-- <th>{{datas.missingSuccessStatus}}</th> -->
+                                <th>{{datas.missingRedemSuccessCount}}</th>
+                                <!-- <th>{{datas.missingRedemSuccessStatus}}</th> -->
+                                <th>{{datas.accuralMissing}}</th>
+                                <th>{{datas.invalidErrorCount}}</th>
+                                <!-- <th>{{datas.invalidErrorStatus}}</th> -->
+                                <th>{{datas.validErrorCount}}</th>
+                                <!-- <th>{{datas.validErrorStatus}}</th> -->
+                                <!-- <th>{{datas.errorCount}}</th>
+                                <th>{{datas.errorStatus}}</th> -->
+                                <th>{{datas.matchedCount}}</th>
+                                <th>{{datas.nonLoyality}}</th>
+                                <th>{{datas.remarks}}</th>
+                                <!-- <th>{{datas.rollBackSuccess}}</th> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="no_data_found" *ngIf="responceData[i].brandErrorSucces.length == 0">
+                    Data Not Available!!!
+                </div>
+                <div class="space pt-4 pb-2">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

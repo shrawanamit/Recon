@@ -1,0 +1,654 @@
+<div class="mt-4 digital-reciept">
+    <div class="container" *ngIf="!openSearchTable">
+        <div class="reconLoadingData" *ngIf="loadingData">
+            <button class="btn btn-dark">
+                <span class="text-light spinner-border spinner-border-sm"></span>
+                <span>Loading! Please wait ...</span>
+                <!-- <p class="text-danger">{{errorMsg}}</p> -->
+            </button>
+        </div>
+        <div class="card">
+            <div class='card-body'>
+                <div class="title d-flex justify-content-between">
+                    <div class="table_heading_wrap">
+                        <h3>Digital Reciept Summary</h3>
+                        <div>
+                            <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                                <img class="img_refresh" src="/assets/images/downloadTable.svg" (click)="downloadCSV()">
+                            </small>
+                        </div>
+                        <!-- <button (click)="downloadCSV()" class="btndownload">Download table</button> -->
+                    </div>
+
+                    <!-- <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                    #dateRangePicker></ngx-mat-drp> -->
+                    <div class="search-inovice">
+                        <input id="searhDate" type="date" (change)="Filters($event)" [value]="todaysDate" />
+                        <!-- <button class="search-inovice" (click)="openSearchingModel()" data-toggle="modal"
+                            data-target=".bd-example-modal-lg"><i class="fa fa-search" aria-hidden="true"></i></button> -->
+
+                        <!-- <small class="icon-info-tooltip" data-tip="Download Recipt Summary" > -->
+                        <!-- <button class="search-inovice  download js-btn-tooltip" (click)="downloadCSV()"
+                            data-toggle="tooltip" data-placement="top" data-custom-class="tooltip-primary"
+                            title="Download bill summary"><i class="fa fa-download" aria-hidden="true"></i></button> -->
+                        <small class="icon-info-tooltip" data-tip="Refresh " tabindex="2">
+                            <img class="img_refresh" src="/assets/images/refresh.svg" (click)="refresh()">
+                        </small>
+
+
+                        <!-- <img src="/assets/images/pencil.svg">
+                        </small> -->
+                    </div>
+                    <!-- <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"
+                    #dateRangePicker></ngx-mat-drp> -->
+                </div>
+
+
+
+                <div class='mt-4 dr-table'>
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th>S.No</th>
+                                <!-- <th>Request Date</th> -->
+                                <th>Brand Name</th>
+                                <th>#Total</th>
+                                <th>#Failed</th>
+                                <th>#Success</th>
+                                <th>#Open%</th>
+                                <th>#Print</th>
+                                <th>#SMS</th>
+                                <th>#WhatsApp</th>
+                                <th>#Email</th>
+                                <th>#Stores</th>
+                                <th>Search</th>
+                                <!-- <th>View Logs</th> -->
+                            </tr>
+                            <tr *ngFor="let datas of userData;let i = index">
+                                <th>{{i+1}}</th>
+                                <!-- <th>{{datas.requetDate | date}}</th> -->
+                                <th>{{datas.tenantCode}}</th>
+                                <th>
+                                    <p class="totalbill_wrap total_count_wrap" (click)="getInvoiceBySummary(datas,i)">
+                                        {{datas.totalBills}}
+                                    </p>
+                                    <!-- <label class="resend" *ngIf=totalIsClick.includes(i)>see summary below</label> -->
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap faild_count_wrap"
+                                        (click)="getInvoiceBySummaryFailed(datas)">{{datas.fail}}
+                                    </p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap success_count_wrap"
+                                        (click)="getInvoiceBySummarySucess(datas)">
+                                        {{datas.success}}</p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap total_count_wrap"
+                                        (click)="getInvoiceBySummaryPercent(datas)">
+                                        {{datas.readCount}}</p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap email_count_wrap"
+                                        (click)="getInvoiceBySummaryPrint(datas)">
+                                        {{datas.print}}
+                                    </p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap sms_count_wrap" (click)="getInvoiceBySummarySms(datas)">
+                                        {{datas.sms}}</p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap wap_count_wrap"
+                                        (click)="getInvoiceBySummaryWhatsapp(datas)">
+                                        {{datas.whatsAPP}}
+                                    </p>
+                                </th>
+                                <th>
+                                    <p class="totalbill_wrap email_count_wrap"
+                                        (click)="getInvoiceBySummaryEmail(datas)">{{datas.email}}
+                                    </p>
+                                </th>
+
+
+
+                                <th>
+                                    <p class="store" (click)="getStoreDetail(datas)">
+                                        {{datas.distinctStoreCode}}
+                                    </p>
+                                </th>
+
+
+
+                                <th><button class="button-style" (click)="openSearchModal(datas)" data-toggle="modal"
+                                        data-target=".bd-example-modal-lg"><i class="fa fa-search"
+                                            aria-hidden="true"></i></button></th>
+                                <!-- <th><button class="button-style" (click)="openViewModal()"><i class="fa fa-eye"
+                                            aria-hidden="true"></i></button></th> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+
+        <div class="card mt-4">
+            <div class="reconLoadingData" *ngIf="loadingDataSummary">
+                <button class="btn btn-dark">
+                    <span class="text-light spinner-border spinner-border-sm"></span>
+                    <span>Loading! Please wait ...</span>
+                    <!-- <p class="text-danger">{{errorMsg}}</p> -->
+                </button>
+            </div>
+
+
+
+
+            <div class='card-body' *ngIf="this.isopentotalbill && this.invoicesummary.length > 0">
+                <div class="backbuttonSetting d-flex justify-content-between">
+
+                    <h4 class="table_heading" *ngIf="invoicesummary.length>0">Bill Details #{{TenantCode}}
+                        ({{datefrompicker | date}}) -&nbsp;
+                        <h4 *ngIf="!isFailed" class="table_heading_count" (click)="closeTooltip()">
+                            {{invoicesummaryMessage}}</h4>
+
+                        <h4 *ngIf="isFailed" class="table_heading_total" (click)="closeTooltip()">
+                            {{invoicesummaryMessage}}</h4>
+
+                        <div *ngIf="isTooltipOpen" class="bottom_arrow"></div>
+                        <div *ngIf="isTooltipOpen" class="tool_tip">
+                            <button type="button" class="close close_tooltip"
+                                (click)="closeTooltipCross()">&times;</button>
+                            <div class='dr-table'>
+                                <table>
+                                    <tbody>
+                                        <tr class="table-header">
+                                            <th *ngIf="!total">S.No</th>
+                                            <th *ngIf="!total">Message</th>
+                                            <th *ngIf="!total">#Count</th>
+                                            <th *ngIf="total">#Total</th>
+                                            <th *ngIf="total">#Unique Hit</th>
+                                        </tr>
+                                        <tr *ngFor="let datas of toolTipFailValue;let i = index">
+                                            <th *ngIf="!total">{{i+1}}</th>
+                                            <th *ngIf="!total">{{datas.label}}</th>
+                                            <!-- <th>{{datas.requetDate | date}}</th> -->
+                                            <th (click)="getSummaryByFailedMsg(datas)" *ngIf="!total">
+                                                <span class="totalbill_wrap">
+                                                    {{datas.value}}
+                                                </span>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th *ngIf="total">{{totalBill}}</th>
+                                            <th *ngIf="total">{{uniqueCode}}</th>
+                                            <!-- <th>{{datas.requetDate | date}}</th> -->
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                            <span class="img_download">
+                                <img src="/assets/images/downloadTable.svg" (click)="downloadBillSummary()">
+                            </span>
+                        </small>
+                    </h4>
+
+
+                    <button type="button" class="close" data-dismiss="modal"
+                        (click)="backButtonOpenBill()">&times;</button>
+                </div>
+
+                <div class='mt-4 dr-table'>
+                    <!-- <table id="dtBasicExample" datatable [dtOptions]="dtOptions"> -->
+                        <table>
+                        <thead>
+                            <tr class="table-header">
+                               
+                                <th>Bill No</th>
+                               
+                                <th>Store Code</th>
+                                <th>Customer Name</th>
+                                <th>Mobile No</th>
+                                <th>Email ID</th>
+                                <th *ngIf="isFailed">Read Count</th>
+                                <th *ngIf="!isFailed">Error Message</th>
+                                <th *ngIf="!isFailed">Description</th>
+
+                                <th *ngIf="isFailed">Bitly</th>
+                                <th *ngIf="isFailed">Resend&nbsp;Bitly</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let inoviceDatas of invoicesummary | slice:0:15000; let i = index">
+                               
+                                <th>{{inoviceDatas.billNo}}</th>
+                                
+                                <th>{{inoviceDatas.storecode}}</th>
+
+
+                                <th>{{inoviceDatas.customerName}}</th>
+                                <th>{{inoviceDatas.mobileNo}}</th>
+                                <th>{{inoviceDatas.emailID}}</th>
+                                <th *ngIf="isFailed">{{inoviceDatas.readCount}}</th>
+                                <th *ngIf="!isFailed">{{inoviceDatas.errorMessage}}</th>
+                                <th *ngIf="!isFailed">{{inoviceDatas.errorDescription}}</th>
+
+                                <th *ngIf="isFailed">
+                                    <a href="//{{inoviceDatas.shortURL}}" target="_blank"
+                                        class="linkSorturl">{{inoviceDatas.shortURL}}</a>
+                                </th>
+
+                                <th *ngIf="isFailed"><button class="table-button" *ngIf="inoviceDatas.baseURL != ''"
+                                        (click)="Resend(inoviceDatas,i)">Resend</button>
+
+                                    <label class="resend" *ngIf=resend.includes(i)>sent...</label>
+
+                                </th>
+                               
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+ 
+
+
+
+        <div class="card mt-4">
+            <div class="reconLoadingData" *ngIf="loadingDataSummary">
+                <button class="btn btn-dark">
+                    <span class="text-light spinner-border spinner-border-sm"></span>
+                    <span>Loading! Please wait ...</span>
+                    <!-- <p class="text-danger">{{errorMsg}}</p> -->
+                </button>
+            </div>
+            <div class='card-body' *ngIf="this.isopenStoreBill && this.storeSummary.length > 0">
+                <div class="backbuttonSetting d-flex justify-content-between">
+
+                    <h4 class="table_heading" *ngIf="storeSummary.length>0">Store Wise Bills Details
+                        #{{storeTanentCode}}
+                        ({{billDate | date}})
+
+                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                            <span class="img_download">
+                                <img src="/assets/images/downloadTable.svg" (click)="downloadStoreSummary()">
+                            </span>
+                        </small>
+                    </h4>
+
+
+                    <button type="button" class="close" data-dismiss="modal"
+                        (click)="backButtonstoreBill()">&times;</button>
+                </div>
+
+                <div class='mt-4 dr-table'>
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+
+
+                                <th>#Store Code</th>
+                                <th>#Store Name</th>
+                                <th>#Register No</th>
+                                <th>#Total Bill</th>
+                                <th>#Sucess Bill</th>
+                                <th>#Fail Bill</th>
+                                <th>#Print Bill</th>
+                                <th>#SMS Count</th>
+
+
+                            </tr>
+                            <tr *ngFor="let inoviceDatas of storeSummary;let i = index">
+
+                                <th>{{inoviceDatas.storeCode}}</th>
+                                <th>{{inoviceDatas.storeName}}</th>
+                                <th>{{inoviceDatas.registerNo}}</th>
+                                <th>
+                                    <p class="totalbill_wrap total_count_wrap"
+                                        (click)="getTotalBillSummary(inoviceDatas)">
+                                        {{inoviceDatas.totalBills}}
+                                    </p>
+                                </th>
+                                <th>{{inoviceDatas.successBills}}</th>
+                                <th>{{inoviceDatas.failBills}}</th>
+                                <th>{{inoviceDatas.printBills}}</th>
+                                <th>{{inoviceDatas.smsCount}}</th>
+
+
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class=" mt-4 card">
+        </div>
+
+        <div class=" mt-4 card">
+            <div class="reconLoadingData" *ngIf="loadingDataSummary">
+                <button class="btn btn-dark">
+                    <span class="text-light spinner-border spinner-border-sm"></span>
+                    <span>Loading! Please wait ...</span>
+                    <!-- <p class="text-danger">{{errorMsg}}</p> -->
+                </button>
+            </div>
+
+            <div class=' card-body' *ngIf="this.isOpenTotalStoreBill && this.totalBillsStoreSummary.length > 0">
+                <div class="backbuttonSetting d-flex justify-content-between">
+
+                    <h4 class="table_heading" *ngIf="storeSummary.length>0">Total Bills Details
+                        #{{storeTanentCode}}
+                        ({{billDate | date}})
+
+                        <small class="icon-info-tooltip" data-tip="Download bill summary" tabindex="2">
+                            <span class="img_download">
+                                <img src="/assets/images/downloadTable.svg" (click)="downloadTotalStoreBillSummary()">
+                            </span>
+                        </small>
+                    </h4>
+
+
+                    <button type="button" class="close" data-dismiss="modal"
+                        (click)="backButtonTotlStorBill()">&times;</button>
+                </div>
+
+                <div class='mt-4 dr-table'>
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+
+
+
+                                <th>#Bill No</th>
+                                <th>#Customer Name </th>
+                                <th>#EmailId </th>
+                                <th>#Mobile No </th>
+                                <th>#Read Count </th>
+                                <th>#RegisterNo </th>
+                                <th>#ShortURL </th>
+                                <th>#Sms Date </th>
+                                <th>#Store Code </th>
+
+
+                            </tr>
+                            <tr *ngFor="let inoviceDatas of totalBillsStoreSummary;let i = index">
+
+
+                                <th>{{inoviceDatas.billNo}}</th>
+                                <th>
+                                    {{inoviceDatas.customerName}}
+                                </th>
+                                <th>{{inoviceDatas.emailId}}</th>
+                                <th>{{inoviceDatas.mobileNo}}</th>
+                                <th>{{inoviceDatas.readCount}}</th>
+                                <th>{{inoviceDatas.registerNo}}</th>
+
+                                <th>{{inoviceDatas.shortURL}}</th>
+                                <th>{{inoviceDatas.smsDate }}</th>
+                                <th>{{inoviceDatas.storeCode}}</th>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- *ngIf="openSearch" -->
+
+<div class="mt-4 digital-reciept" *ngIf="openSearchTable">
+
+    <div class="container">
+        <div class="card">
+
+            <div class='card-body'>
+                <div class="backbuttonSetting flex-column">
+                    <div class="d-flex justify-content-between">
+                        <h4 class="table_heading">Bill Summary #{{TenantCode}}
+                            <!-- <button class="search-inovice  download" (click)="downloadSeachInoviceDataCSV()"
+                            data-toggle="tooltip" data-placement="top" title="Download bill summary"><i
+                                class="fa fa-download" aria-hidden="true"></i></button> -->
+                            <small *ngIf="!dataNotFoundMsg" class="icon-info-tooltip" data-tip="Download bill summary"
+                                tabindex="2">
+
+                                <img class="img_download pb-1" src="/assets/images/downloadTable.svg"
+                                    (click)="downloadSeachInoviceDataCSV()">
+
+                            </small>
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" (click)="backbutton()">&times;</button>
+                    </div>
+                    <div *ngIf="dataNotFoundMsg" class="d-flex justify-content-center mt-4 ">sorry!! no data found</div>
+                </div>
+
+                <div class='mt-4 dr-table' *ngIf="this.tablevalue==true">
+                    <div class="reconLoadingData" *ngIf="loadingData">
+                        <button class="btn btn-dark">
+                            <span class="text-light spinner-border spinner-border-sm"></span>
+                            <span>Loading! Please wait ...</span>
+                        </button>
+                    </div>
+
+
+
+                    <!-- <div class="download_btn_wrap">
+                        <button (click)="downloadSeachInoviceDataCSV()" class="btndownload">Download table</button>
+                    </div> -->
+
+                    <table *ngIf="!dataNotFoundMsg">
+                        <tbody>
+                            <tr class="table-header mobile-table">
+                                <th>program&nbsp;code</th>
+                                <th>Bill&nbsp;No</th>
+                                <th>Bill&nbsp;Date</th>
+                                <th>Store&nbsp;Code</th>
+                                <th>Customer&nbsp;Name</th>
+                                <th>Mobile&nbsp;No</th>
+                                <th>Email&nbsp;ID</th>
+                                <th>Bitly</th>
+                                <th>Resend&nbsp;Bitly</th>
+                                <!-- <th>Feedback&nbsp;URL</th>
+                                <th>Resend&nbsp;Feedback</th> -->
+
+                            </tr>
+
+
+
+                            <tr class="mobile-table-tr" *ngFor="let inoviceDatas of seachInoviceData;let i = index">
+                                <th>{{inoviceDatas.progCode}}</th>
+                                <th>{{inoviceDatas.billNo}}</th>
+                                <th>{{inoviceDatas.billDate|date}}</th>
+                                <th>{{inoviceDatas.storecode}}</th>
+
+                                <th>{{inoviceDatas.customerName}}</th>
+                                <th>{{inoviceDatas.mobileNo}}</th>
+                                <th>{{inoviceDatas.emailID.toLowerCase()}}</th>
+                                <th>
+                                    <a href="//{{inoviceDatas.shortURL}}" target="_blank"
+                                        class="linkSorturl">{{inoviceDatas.shortURL.toLowerCase()}}</a>
+                                </th>
+
+                                <th><button class="table-button" *ngIf="inoviceDatas.baseURL != ''"
+                                        (click)="Resend(inoviceDatas,i)">Resend</button>
+
+                                    <label class="resend" *ngIf=resend.includes(i)>sent...</label>
+
+                                </th>
+                                <!-- <th class="LinkColor">
+                                    <a href="//{{inoviceDatas.feedbackURL}}" target="_blank"
+                                        class="linkfeedbackurl">{{inoviceDatas.feedbackURL}}</a>
+                                </th>
+                                <th><button class="table-button" *ngIf="inoviceDatas.feedbackURL != ''"
+                                        (click)="ResendFeedback(inoviceDatas,i)">Resend</button>
+
+                                    <label class="resend" *ngIf=resendFeedbackInd.includes(i)>sent...</label>
+
+                                </th> -->
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  *ngIf="!closeModel"-->
+
+<div class="model_wrap">
+    <div id="myModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="card">
+                    <div class="backbuttonSetting d-flex justify-content-end">
+                        <button type="button" class="close" data-dismiss="modal" (click)="backbutton()">&times;</button>
+                    </div>
+                    <div class='card-body' *ngIf="openSearchModel">
+                        <div class="title d-flex justify-content-between">
+                            <h3>{{TenantCode}} - <i class="fa fa-search" aria-hidden="true"></i>
+                            </h3>
+                            <!-- <div class="searhinput">
+                        <label class="err" *ngIf="requiredfieldErr">Atlest one field is reqired from mobile number, inovice number, store code</label>
+                        </div> -->
+                            <input type="date" name="daterange" class="date_style" placeholder="Select Date"
+                                [value]="todaysDate" (change)="billDatahandler($event)" />
+                        </div>
+                        <div class='details'>
+                            <div class="details-flex  d-flex search-rec ">
+
+                                <div class="store-details input-flex">
+                                    <div class="searhinput" *ngIf="IsTenentFieldReq">
+                                        <!-- <input type="text" class="input-style" placeholder="tenent Code*"
+                       (change)="tenentCodeHandler($event)" /> -->
+                                        <label>Tenent code</label>
+                                        <select class="input-style" (change)="tenentCodeHandler($event)">
+                                            <option [value]=""></option>
+                                            <option *ngFor="let tenent of tenentList" [value]="tenent.tenantCode">
+                                                {{tenent.tenantName}}</option>
+                                        </select>
+                                        <!-- <label class="err" *ngIf="TenentFielderr">Tenent Field is reqired</label> -->
+                                        <!-- <div class="searhinput"> -->
+                                        <!-- <label class="err" *ngIf="requiredfieldErr">Atlest one field is reqired from Mobile -->
+                                        <!-- Number, Inovice Number, Store Code</label> -->
+                                        <!-- </div> -->
+                                        <!-- <label class="err" *ngIf="StoreCodeErr"> Store Code is requied</label> -->
+                                    </div>
+                                    <div class="searhinput">
+                                        <label>Mobile Number*</label>
+                                        <input type="number" class="input-style" id="mobileNo"
+                                            [(ngModel)]="MobileNumber" name="MobileNumber"
+                                            (change)="MobileNumberHandler($event)" (keyup)="textareaValidation()" />
+                                        <!-- <label class="err" *ngIf="requiredfieldErr"> one field is reqired</label> (change)="MobileNumberHandler($event)" -->
+                                    </div>
+                                    <div class="searhinput">
+                                        <label>Invoice Number*</label>
+                                        <input type="text" class="input-style" id="invoiceNo"
+                                            [(ngModel)]="InvoiceNumber" name="InvoiceNumber"
+                                            (keyup)="textareaValidation()" (change)="InvoiceNumberHandler($event)" />
+                                    </div>
+                                    <div class="searhinput">
+                                        <label>Store Code*</label>
+                                        <input type="text" class="input-style" id="storeCode" [(ngModel)]="StoreCode"
+                                            name="StoreCode" (keyup)="textareaValidation()"
+                                            (change)="StoreCodeHandler($event)" />
+                                        <!-- <label class="err" *ngIf="StoreCodeErr"> Store Code is requied</label> (change)="StoreCodeHandler($event)"-->
+                                    </div>
+                                    <div class="searhinput margin_top">
+                                        <button *ngIf="IsTenentFieldReq == false" (click)="searchingData()"
+                                            class="btnsearch">SEARCH</button>
+                                        <button *ngIf="IsTenentFieldReq" (click)="SearchModal()" class="btnsearch"
+                                            data-dismiss="modal">SEARCH</button>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex flex-column justify-content-left ">
+                                    <!-- <label class="err" *ngIf="TenentFielderr">Tenent Field is reqired</label> -->
+                                    <label class="err" *ngIf="requiredfieldErr">{{errortext}}</label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="all_data_wrap" *ngIf="openDistStore">
+
+                        <h3 class="storeHeader">Store Detail #{{storeTanentCode}}</h3>
+                        <div class='dr-table'>
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th>#Store Code</th>
+                                        <th>#Bill</th>
+                                    </tr>
+                                    <tr *ngFor="let data of storeCount;let i = index">
+
+                                        <th>
+                                            <span class="totalbill_wrap">{{data.storeCode}}
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span class="totalbill_wrap">{{data.storeCount}}
+                                            </span>
+                                        </th>
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> -->
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

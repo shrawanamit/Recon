@@ -1,0 +1,158 @@
+<div class="mt-4 file_container">
+
+    <div class="row mt-4 file_container_wrap">
+        <div class="col-6 file_container_form">
+            <div class="row  mb-4">
+
+                <div class="col-6 py-2">
+                    Recon Type
+                </div>
+                <div class="form-group col-6">
+                    <select name="FileType" id="FileTypeSelect" [(ngModel)]="FileType"
+                        (ngModelChange)="selectFileType(FileType)" required #fileType="ngModel">
+                        <option [ngValue]="1">Standard</option>
+                        <option [ngValue]="2">Gsl</option>
+                        <option [ngValue]="3">Ecomm</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row  mb-4">
+
+                <div class="col-6 py-2">
+                    Line Seprator
+                </div>
+                <div class="form-group col-6">
+                    <select name="LineSeperater" id="FileTypeSelectLine" [(ngModel)]="LineSeperater"
+                        (ngModelChange)="selectLineSeperater(LineSeperater)" required #fileType="ngModel">
+                        <option [ngValue]="1">\r\n</option>
+                        <option [ngValue]="2">\n</option>
+                        <!-- <option [ngValue]="3">\r\n</option> -->
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="row mb-4">
+
+                <div class="col-6  py-2">
+                    Sale File
+                </div>
+                <div class="form-group col-6">
+                    <input type="file" class="form-control-file" name="file" id="file1"
+                        (change)="handleFile1Input($event.target.files)">
+                    <span>* File less then 50MB</span>
+
+                </div>
+
+
+            </div>
+            <div class="row">
+
+                <button class="ml-2" (click)="validateFile()">
+                    <span *ngIf="loadingData" class="text-ligt spinner-border spinner-border-sm " role="status"
+                        aria-hidden="true"></span>
+                    Validate
+                </button>
+            </div>
+
+        </div>
+
+        <div class="col-6 file_container_form">
+            <div class="row  mb-4">
+
+                <div class="col-6 py-2">
+                    File Type
+                </div>
+                <div class="form-group col-6">
+                    <select name="FileTypeTender" id="FileTypeTender" [(ngModel)]="FileTypeTender"
+                        (ngModelChange)="selectFileTypeTender(FileType)" required #fileType="ngModel">
+                        <option [ngValue]="1">CSV</option>
+                        <option [ngValue]="2">TXT</option>
+                        <!-- <option [ngValue]="3">Ecomm</option> -->
+                    </select>
+
+                </div>
+            </div>
+            <div class="row  mb-4">
+
+                <div class="col-6 py-2">
+                    Column Seperator
+                </div>
+                <div class="form-group col-6">
+                    <select name="ColumnSeperator" id="FileTypeSelectTender" [(ngModel)]="ColumnSeperator"
+                        (ngModelChange)="selectColumnSeperator(ColumnSeperator)" required #fileTypeTender="ngModel">
+
+
+                        <option [ngValue]="1">,</option>
+                        <option [ngValue]="2">|</option>
+                        <option [ngValue]="3">||</option>
+                        <option [ngValue]="4">~</option>
+                        <option [ngValue]="5">~|</option>
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="row mb-4">
+
+                <div class="col-6  py-2">
+                    Tender File
+                </div>
+                <div class="form-group col-6">
+                    <input type="file" class="form-control-file" name="file" id="file2"
+                        (change)="handleFile2Input($event.target.files)">
+                    <span>* File less then 50MB</span>
+
+                </div>
+
+
+            </div>
+            <!-- <div class="row">
+
+                <button class="ml-2" (click)="validateFile()">
+                    <span *ngIf="loadingData" class="text-ligt spinner-border spinner-border-sm " role="status"
+                        aria-hidden="true"></span>
+                    Validate
+                </button>
+            </div> -->
+
+        </div>
+    </div>
+    <!-- <div class="row mb-4 mt-4 "> -->
+        <div class="row mt-4 mb-4 file_container_wrap">
+            <div class="col-6 file_container_form" *ngIf="displayFileRes">
+        <!-- <div class="col-6 " > -->
+            <span class="output_text_wrap">{{fileUploadResponce}}</span>
+            <!-- <span class="responceError" *ngFor="let fileUploadResponceError of fileUploadResponceError;let i = index">{{fileUploadResponceError}}
+                <br/>
+            </span> -->
+        </div>
+
+        <div class="col-12  file_container_form " *ngIf="displayFileError" >
+            <span class=" output_text_wrap responceError">
+               Error Message Table
+            </span>
+            <div class='dr-table '>
+                <table>
+                    <tbody>
+                        <tr class="table-header">
+                            <th>S.No</th>
+                            <th>File Name</th>
+                            <th>Error Type</th>
+                            <th>Error Message</th>   
+                        </tr>
+                        <tr *ngFor="let datas of fileUploadResponceError;let i = index">
+                            <th>{{i+1}}</th>
+                            <th>{{datas.FileName}}</th>
+                            <th>{{datas.ErrorType}}</th>
+                            <th>{{datas.ErrorMessage}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

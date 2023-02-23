@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+        "target": "http://api-reconconfiguration.ercx.co",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

@@ -1,0 +1,77 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+
+.page_content {
+  position: relative;
+  min-height: 100vh;
+  nav {
+    padding: 0px 30px;
+    .navbar-brand {
+      padding: 5px 0;
+      margin: 0;
+      padding-right: 20px;
+      img {
+        max-width: 69px;
+        width: 100%;
+      }
+    }
+  }
+  .login_form_wrap {
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: $color-white;
+    padding: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    .logo_wrap {
+      text-align: center;
+      padding: 15px;
+      img {
+        max-width: 200px;
+      }
+    }
+    .form_wrap {
+      max-width: 80%;
+      margin: 0 auto;
+      padding: 15px 0;
+      .form_title {
+        h4 {
+          @include heading-H4;
+        }
+      }
+      label {
+        @include label;
+      }
+      input {
+        @include input;
+      }
+      .password {
+        position: relative;
+        .btn-toggle-pass {
+          position: absolute;
+          top: 33px;
+          right: 5px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          i{
+            color: $color-dark-grey;
+            font-size: 20px;
+          }
+        }
+      }
+      .action_btn {
+        margin-top: 10px;
+        button {
+          @include button;
+          width: 100%;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

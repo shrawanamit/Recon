@@ -1,0 +1,30 @@
+<div class="all_programs_wrap">
+    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+        <img src="assets/images/cross.svg">
+    </button>
+    <div class="search_filter text-center">
+        <input placeholder="Search" type="text" [(ngModel)]="searchText" (ngModelChange)="selectedSearchText($event)">
+        <img src="assets/images/search.svg">
+    </div>
+    <div class="letter_filter_wrap row">
+        <div *ngFor="let letter of allProgram  |filter:searchText" class="col-2">
+            <div class="letter">{{letter.group}}</div>
+            <div class="data" *ngFor="let dataName of letter.children">
+                <div class="checkbox_wrap">
+                    <div class="form-group">
+                        <input type="checkbox" id="{{dataName.brandId}}" [checked]="dataName.isSelect"
+                            (change)="getselectedProgram(dataName)">
+                        <label for="{{dataName.brandId}}">{{dataName.brandName}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal_footer">
+        <div class="action_btn">
+            <button (click)="closeModal()">Close</button>
+            <div class="count">{{selectedProgramCount}} of {{totalProgramCount}} Selected</div>
+            <button (click)="closeModal()">Select</button>
+        </div>
+    </div>
+</div>

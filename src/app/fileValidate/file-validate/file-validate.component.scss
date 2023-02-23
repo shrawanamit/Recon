@@ -1,0 +1,113 @@
+@import "src/scss/variables.scss";
+@import "src/scss/mixins.scss";
+.file_container {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-white;
+  padding: 20px;
+  border-radius: 10px;
+  .backbtn_wrap {
+    padding-right: 20px;
+    .close {
+      outline: none;
+    }
+  }
+  .file_container_wrap {
+    .file_container_form {
+      padding-left: 115px;
+      padding-right: 115px;
+      .form-group {
+        margin-bottom: 0px;
+        select,
+        .selected_text {
+          @include selectBox;
+          text-transform: capitalize;
+        }
+        input {
+          @include input;
+          margin-bottom: 0;
+        }
+      }
+      button {
+        @include button;
+        margin-bottom: 0;
+
+        .spinner-border {
+          stroke: $theme-color !important;
+          color: $color-white;
+        }
+      }
+    }
+  }
+
+  .output_text_wrap {
+    padding-left: 100px;
+    padding-right: 115px;
+    // border: 2px solid $color-light-black;
+    // border-radius: 5px;
+    // margin: 0px 25px 25px 25px ;
+    // padding: 14px;
+    color: $theme-color;
+    font-weight: 400;
+  }
+  .responceError {
+    color: $color-valid-error;
+    padding-left: 0px;
+    font-weight: bold;
+    font-size: 20px;
+    // margin: 0px 25px px 25px ;
+  }
+
+  .dr-table {
+    max-height: 400px;
+    overflow-y: auto;
+    table {
+      width: 100%;
+      text-align: left;
+    }
+    .table-header {
+      th {
+        background-color: $theme-color;
+        line-height: 25px;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 400;
+        vertical-align: middle;
+        padding: 10px;
+        border: none;
+        position: sticky;
+        top: 0;
+      }
+    }
+    tr {
+      background-color: white;
+      line-height: 30px;
+
+      color: #959795;
+      font-size: 13px;
+      font-weight: 300;
+      th {
+        min-width: 100px;
+        background-color: $color-white;
+        padding: 10px;
+        text-transform: capitalize !important;
+        border-bottom: 1px solid #eeecec !important;
+        color: #4a4a4a;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 26px;
+        font-family: "Roboto", sans-serif;
+        text-align: left;
+        margin: 0 auto;
+        vertical-align: middle;
+      }
+    }
+    .button-style {
+      background: none;
+      border: none;
+      outline: none;
+      color: #959795;
+      font-size: 18px;
+    }
+  }
+}
